@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgres"
+  url      = env("DATABASE_URL")
 }
 
 enum VoteType {
@@ -76,27 +75,46 @@ model Subreddit {
   @@index([name])
 }
 
+enum RegionType {
+  CITY
+  ZIP
+  ADDRESS
+  COUNTY
+  STATE
+  COUNTRY
+}
+
 model Subscription {
-  user        User      @relation(fields: [userId], references: [id])
+  user        User       @relation(fields: [userId], references: [id])
   userId      String
-  subreddit   Subreddit @relation(fields: [subredditId], references: [id])
+  subreddit   Subreddit  @relation(fields: [subredditId], references: [id])
   subredditId String
+  region      String
+  radius      Int?
+  radiusUnits String?
+  regionType  RegionType
 
   @@id([userId, subredditId])
 }
 
 model Post {
-  id          String    @id @default(cuid())
-  title       String
-  content     Json?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    String
-  subreddit   Subreddit @relation(fields: [subredditId], references: [id])
-  subredditId String
-  comments    Comment[] 
-  votes       Vote[]
+  id            String    @id @default(cuid())
+  title         String
+  address       String
+  streetAddress String
+  zipCode       String
+  city          String
+  country       String
+  listingUrl    String?
+  content       Json?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      String
+  subreddit     Subreddit @relation(fields: [subredditId], references: [id])
+  subredditId   String
+  comments      Comment[]
+  votes         Vote[]
 }
 
 model Comment {

@@ -1,11 +1,12 @@
 {
-  "name": "reddit-clone",
+  "name": "Home Listing Reviews",
   "version": "0.1.0",
   "private": true,
+  "author": "Raphael Chevallier",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next dev -p 3002",
+    "build": "prisma generate && next build",
+    "start": "next start -p 3002",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
@@ -23,7 +24,7 @@
     "@hookform/resolvers": "^3.1.0",
     "@mantine/hooks": "^6.0.13",
     "@next-auth/prisma-adapter": "^1.0.6",
-    "@prisma/client": "^4.14.1",
+    "@prisma/client": "^5.6.0",
     "@radix-ui/react-avatar": "^1.0.3",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-label": "^2.0.2",
@@ -42,14 +43,13 @@
     "date-fns": "^2.30.0",
     "editorjs-react-renderer": "^3.5.1",
     "eslint": "8.41.0",
-    "eslint-config-next": "13.4.4",
+    "eslint-config-next": "13.5.6",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.221.0",
     "nanoid": "^4.0.2",
-    "next": "13.4.4",
+    "next": "13.5.6",
     "next-auth": "^4.22.1",
     "postcss": "8.4.23",
-    "prisma": "^4.14.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
@@ -65,10 +65,11 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/editorjs__header": "^2.6.0",
+    "@types/lodash.debounce": "^4.0.7",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
-    "@types/editorjs__header": "^2.6.0",
-    "@types/lodash.debounce": "^4.0.7"
+    "prisma": "^5.6.0"
   }
 }
