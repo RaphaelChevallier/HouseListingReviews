@@ -71,7 +71,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
   }, [pathname])
 
   return (
-    <div className='flex w-[35em]'>
+    <div className='flex w-[38em]'>
     <Command
       ref={commandRef}
       className='relative rounded-lg border max-w-lg z-50 overflow-visible'>
@@ -85,7 +85,6 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         className='outline-none border-none focus:border-none focus:outline-none ring-0'
         placeholder='Search...'
       />
-        
 
       {input.length > 0 && (
         <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-md'>
@@ -113,8 +112,8 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     </Command>
     <DropdownMenu >
       <DropdownMenuTrigger>
-      <Button variant='subtle' className='bg-slate-200 h-full w-[10em] rounded-md'>
-        {searchType} <ChevronDown/>
+      <Button variant='subtle' className='bg-slate-200 h-full w-[12em] rounded-md'>
+        By: {searchType} <ChevronDown/>
       </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='bg-white' align='end'>

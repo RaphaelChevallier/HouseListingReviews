@@ -4,19 +4,16 @@ import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
 interface pageProps {
-  params: {
-    slug: string
-  }
 }
 
-const page = async ({ params }: pageProps) => {
-  const subreddit = await db.subreddit.findFirst({
-    where: {
-      name: params.slug,
-    },
-  })
+const page = async ({ }: pageProps) => {
+  // const subreddit = await db.post.findFirst({
+  //   where: {
+  //     : params.slug,
+  //   },
+  // })
 
-  if (!subreddit) return notFound()
+  // if (!subreddit) return notFound()
 
   return (
     <div className='flex flex-col items-start gap-6'>
@@ -27,13 +24,13 @@ const page = async ({ params }: pageProps) => {
             Create Post
           </h3>
           <p className='ml-2 mt-1 truncate text-sm text-gray-500'>
-            in r/{params.slug}
+            in
           </p>
         </div>
       </div>
 
       {/* form */}
-      <Editor subredditId={subreddit.id} />
+      <Editor  />
 
       <div className='w-full flex justify-end'>
         <Button type='submit' className='w-full' form='subreddit-post-form'>

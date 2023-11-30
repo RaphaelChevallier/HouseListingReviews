@@ -14,12 +14,9 @@ export async function GET(req: Request) {
       where: {
         userId: session.user.id,
       },
-      include: {
-        subreddit: true,
-      },
     })
 
-    followedCommunitiesIds = followedCommunities.map((sub) => sub.subreddit.id)
+    followedCommunitiesIds = followedCommunities.map((sub) => sub.region)
   }
 
   try {
@@ -60,7 +57,7 @@ export async function GET(req: Request) {
         createdAt: 'desc',
       },
       include: {
-        subreddit: true,
+        // subreddit: true,
         votes: true,
         author: true,
         comments: true,

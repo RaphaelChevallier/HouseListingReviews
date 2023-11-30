@@ -39,7 +39,7 @@ export default async function Home() {
               className={buttonVariants({
                 className: 'w-full mt-4 mb-6',
               })}
-              href={`/r/create`}>
+              href={`/r/submit`}>
               Create {session ? null : " Anonymous "} Post
             </Link>
           </dl>

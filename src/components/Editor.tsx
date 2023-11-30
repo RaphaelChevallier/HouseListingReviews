@@ -19,10 +19,9 @@ import '@/styles/editor.css'
 type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  subredditId: string
 }
 
-export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
+export const Editor: React.FC<EditorProps> = ({ }) => {
   const {
     register,
     handleSubmit,
@@ -30,13 +29,16 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   } = useForm<FormData>({
     resolver: zodResolver(PostValidator),
     defaultValues: {
-      subredditId,
       title: '',
+      listingUrl: '',
+      address: '',
       content: null,
     },
   })
   const ref = useRef<EditorJS>()
   const _titleRef = useRef<HTMLTextAreaElement>(null)
+  const _listingUrlRef = useRef<HTMLTextAreaElement>(null)
+  const _addressRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()
   const [isMounted, setIsMounted] = useState<boolean>(false)
   const pathname = usePathname()
@@ -44,10 +46,11 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   const { mutate: createPost } = useMutation({
     mutationFn: async ({
       title,
+      listingUrl, 
+      address,
       content,
-      subredditId,
     }: PostCreationRequest) => {
-      const payload: PostCreationRequest = { title, content, subredditId }
+      const payload: PostCreationRequest = { title, listingUrl, address, content }
       const { data } = await axios.post('/api/subreddit/post/create', payload)
       return data
     },
@@ -170,8 +173,9 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
 
     const payload: PostCreationRequest = {
       title: data.title,
+      listingUrl: data.listingUrl,
+      address: data.address,
       content: blocks,
-      subredditId,
     }
 
     createPost(payload)
@@ -182,6 +186,10 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
   }
 
   const { ref: titleRef, ...rest } = register('title')
+
+  const { ref: listingUrlRef, ...rest1 } = register('listingUrl')
+
+  const { ref: addressRef, ...rest2 } = register('address')
 
   return (
     <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
@@ -198,7 +206,27 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
             }}
             {...rest}
             placeholder='Title'
-            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
+            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-3xl font-bold focus:outline-none border-b-2 border-black'
+          />
+          <TextareaAutosize
+            ref={(e) => {
+              listingUrlRef(e)
+              // @ts-ignore
+              _listingUrlRef.current = e
+            }}
+            {...rest1}
+            placeholder='Paste listing url here'
+            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-md focus:outline-none border-b-2 border-slate-400 text-blue-400'
+          />
+          <TextareaAutosize
+            ref={(e) => {
+              addressRef(e)
+              // @ts-ignore
+              _addressRef.current = e
+            }}
+            {...rest2}
+            placeholder='Address'
+            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-md focus:outline-none border-b-2 border-slate-400'
           />
           <div id='editor' className='min-h-[500px]' />
           <p className='text-sm text-gray-500'>
