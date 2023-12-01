@@ -1,6 +1,5 @@
 'use client'
 
-import { Prisma } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 import { AutoCompleteAddress } from '@/types/radar'
 import axios from 'axios'
@@ -12,7 +11,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 

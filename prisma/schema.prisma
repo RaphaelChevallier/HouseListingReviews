@@ -43,12 +43,12 @@ model Session {
 }
 
 model User {
-  id                String         @id @default(cuid())
-  name              String?
-  email             String?        @unique
-  emailVerified     DateTime?
-  subscriptions     Subscription[]
-  votes             Vote[]
+  id            String         @id @default(cuid())
+  name          String?
+  email         String?        @unique
+  emailVerified DateTime?
+  subscriptions Subscription[]
+  votes         Vote[]
 
   username String? @unique
 
@@ -85,9 +85,12 @@ model Post {
   title         String
   address       String
   streetAddress String
-  zipCode       String
+  postalCode    String
   city          String
+  county        String
   country       String
+  longitude     Decimal
+  latitude      Decimal
   listingUrl    String?
   content       Json?
   createdAt     DateTime  @default(now())

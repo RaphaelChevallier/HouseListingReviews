@@ -11,6 +11,13 @@ export const PostValidator = z.object({
     }),
   listingUrl:  z.string().url().optional().or(z.literal('')),
   address: z.string(),
+  streetAddress: z.string(),
+  postalCode: z.string(),
+  city: z.string(),
+  country: z.string(),
+  county: z.string(),
+  longitude: z.number(),
+  latitude: z.number(),
   content: z.any(),
 })
 
