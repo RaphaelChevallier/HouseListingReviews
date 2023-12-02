@@ -9,46 +9,44 @@ export async function GET(req: Request) {
 
   let followedCommunitiesIds: string[] = []
 
-  if (session) {
-    const followedCommunities = await db.subscription.findMany({
-      where: {
-        userId: session.user.id,
-      },
-    })
+  // if (session) {
+  //   const followedCommunities = await db.subscription.findMany({
+  //     where: {
+  //       userId: session.user.id,
+  //     },
+  //   })
 
-    followedCommunitiesIds = followedCommunities.map((sub) => sub.region)
-  }
+  //   followedCommunitiesIds = followedCommunities.map((sub) => sub.region)
+  // }
 
   try {
-    const { limit, page, subredditName } = z
+    const { limit, page } = z
       .object({
         limit: z.string(),
         page: z.string(),
-        subredditName: z.string().nullish().optional(),
       })
       .parse({
-        subredditName: url.searchParams.get('subredditName'),
         limit: url.searchParams.get('limit'),
         page: url.searchParams.get('page'),
       })
 
     let whereClause = {}
 
-    if (subredditName) {
-      whereClause = {
-        subreddit: {
-          name: subredditName,
-        },
-      }
-    } else if (session) {
-      whereClause = {
-        subreddit: {
-          id: {
-            in: followedCommunitiesIds,
-          },
-        },
-      }
-    }
+    // if (subredditName) {
+    //   whereClause = {
+    //     subreddit: {
+    //       name: subredditName,
+    //     },
+    //   }
+    // } else if (session) {
+    //   whereClause = {
+    //     subreddit: {
+    //       id: {
+    //         in: followedCommunitiesIds,
+    //       },
+    //     },
+    //   }
+    // }
 
     const posts = await db.post.findMany({
       take: parseInt(limit),

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const { title, content, subredditId } = PostValidator.parse(body)
+    const { title,listingUrl, address, streetAddress, postalCode, city, country, county, longitude, latitude, content } = PostValidator.parse(body)
 
     const session = await getAuthSession()
 
@@ -16,23 +16,31 @@ export async function POST(req: Request) {
     }
 
     // verify user is subscribed to passed subreddit id
-    const subscription = await db.subscription.findFirst({
-      where: {
-        subredditId,
-        userId: session.user.id,
-      },
-    })
+    // const subscription = await db.subscription.findFirst({
+    //   where: {
+    //     subredditId,
+    //     userId: session.user.id,
+    //   },
+    // })
 
-    if (!subscription) {
-      return new Response('Subscribe to post', { status: 403 })
-    }
+    // if (!subscription) {
+    //   return new Response('Subscribe to post', { status: 403 })
+    // }
 
     await db.post.create({
       data: {
         title,
+        listingUrl,
+        address,
+        streetAddress,
+        postalCode,
+        city,
+        country,
+        county,
+        longitude,
+        latitude,
         content,
         authorId: session.user.id,
-        subredditId,
       },
     })
 
@@ -43,7 +51,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(
-      'Could not post to subreddit at this time. Please try later',
+      'Could not post at this time. Please try later',
       { status: 500 }
     )
   }
