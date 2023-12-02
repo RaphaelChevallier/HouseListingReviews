@@ -44,7 +44,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
     queryFn: async () => {
       if (!input) return [];
       const { data } = await axios.get(
-        `/api/search?q=${input}&searchType=address`
+        `/api/search?q=${input.fullAddress}&searchType=address`
       );
       return data.addresses as AutoCompleteAddress[];
     },
@@ -69,14 +69,17 @@ export const Editor: React.FC<EditorProps> = ({}) => {
   const _titleRef = useRef<HTMLTextAreaElement>(null);
   const _listingUrlRef = useRef<HTMLTextAreaElement>(null);
   const _addressRef = useRef<HTMLTextAreaElement>(null);
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState({ fullAddress: '', streetAddress: '', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' })
   const [selectedAddress, setSelectedAddress] = useState<boolean>(false);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const pathname = usePathname();
 
   useOnClickOutside(_addressRef, () => {
-    setSelectedAddress(true);
+    if(!selectedAddress){
+      setSelectedAddress(true)
+      setInput({ fullAddress: '', streetAddress: '', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' })
+    }
   });
 
   const request = debounce(async () => {
@@ -234,20 +237,19 @@ export const Editor: React.FC<EditorProps> = ({}) => {
   }, [isMounted, initializeEditor]);
 
   async function onSubmit(data: FormData) {
-    console.log(data);
     const blocks = await ref.current?.save();
 
     const payload: PostCreationRequest = {
       title: data.title,
       listingUrl: data.listingUrl,
-      address: data.address,
-      streetAddress: data.streetAddress,
-      postalCode: data.postalCode,
-      city: data.city,
-      country: data.country,
-      county: data.county,
-      longitude: data.longitude,
-      latitude: data.latitude,
+      address: input.fullAddress,
+      streetAddress: input.streetAddress,
+      postalCode: input.postalCode,
+      city: input.city,
+      country: input.country,
+      county: input.county,
+      longitude: parseFloat(input.longitude),
+      latitude: parseFloat(input.latitude),
       content: blocks,
     };
 
@@ -304,10 +306,10 @@ export const Editor: React.FC<EditorProps> = ({}) => {
               isLoading={isFetching}
               onValueChange={(text) => {
                 setSelectedAddress(false);
-                setInput(text);
+                setInput({ fullAddress: text, streetAddress: '', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' });
                 debounceRequest();
               }}
-              value={input}
+              value={input.fullAddress}
               className="outline-none border-none focus:border-none focus:outline-none ring-0"
               placeholder="Search your address..."
             />
@@ -329,7 +331,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
                         value={autoCompleteAddress.formattedAddress}
                       >
                         <MapPin className="mr-2 h-4 w-4" />
-                        <a onClick={() => setInput(autoCompleteAddress.formattedAddress)}>{autoCompleteAddress.formattedAddress}</a>
+                        <a onClick={() => setInput({ fullAddress: autoCompleteAddress.formattedAddress, streetAddress: autoCompleteAddress.addressLabel, postalCode: autoCompleteAddress.postalCode, city: autoCompleteAddress.city, country: autoCompleteAddress.country, county: autoCompleteAddress.county, latitude: autoCompleteAddress.latitude.toString(), longitude: autoCompleteAddress.longitude.toString() })}>{autoCompleteAddress.formattedAddress}</a>
                       </CommandItem>
                     ))}
                   </CommandGroup>
