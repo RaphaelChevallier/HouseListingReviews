@@ -1,6 +1,6 @@
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { SubredditSubscriptionValidator } from '@/lib/validators/subreddit'
+import { RegionType } from '@prisma/client'
 import { z } from 'zod'
 
 export async function POST(req: Request) {
@@ -12,13 +12,25 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { subredditId } = SubredditSubscriptionValidator.parse(body)
+    let { region, regionType, radius, radiusUnits } = body
 
-    // check if user has already subscribed or not
+    if(regionType === RegionType.USER){
+      const usernameUserId = await db.user.findFirst({
+        where: {
+          username: region
+        }
+      })
+      region = usernameUserId?.id
+    }
+
+    // check if user has already subscribed to
     const subscriptionExists = await db.subscription.findFirst({
       where: {
-        subredditId,
         userId: session.user.id,
+        region: region,
+        regionType: regionType,
+        radius: radius,
+        radiusUnits: radiusUnits
       },
     })
 
@@ -31,17 +43,18 @@ export async function POST(req: Request) {
       )
     }
 
-    // create subreddit and associate it with the user
     await db.subscription.delete({
       where: {
-        userId_subredditId: {
-          subredditId,
-          userId: session.user.id,
-        },
+        userId: session.user.id,
+        region,
+        regionType: regionType,
+        radius: radius,
+        radiusUnits: radiusUnits
       },
     })
 
-    return new Response(subredditId)
+    return new Response('Unsubscribed!',
+    { status: 200 })
   } catch (error) {
     (error)
     if (error instanceof z.ZodError) {
@@ -49,7 +62,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(
-      'Could not unsubscribe from subreddit at this time. Please try later',
+      'Could not unsubscribe at this time. Please try later',
       { status: 500 }
     )
   }

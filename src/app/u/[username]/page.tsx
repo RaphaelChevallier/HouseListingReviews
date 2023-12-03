@@ -1,10 +1,12 @@
-import CustomFeed from '@/components/homepage/CustomFeed'
-import GeneralFeed from '@/components/homepage/GeneralFeed'
 import UserHistoryFeed from '@/components/homepage/UserHistoryFeed'
-import { buttonVariants } from '@/components/ui/Button'
+import { Button, buttonVariants } from '@/components/ui/Button'
 import { getAuthSession } from '@/lib/auth'
 import { History } from 'lucide-react'
+import { notFound } from 'next/navigation'
+import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
+import { db } from '@/lib/db'
 import Link from 'next/link'
+import { RegionType } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
@@ -17,6 +19,29 @@ interface UserHistoryProps {
 
 export default async function UserHistory({ params }: UserHistoryProps) {
   const session = await getAuthSession()
+  const usernameUserId = await db.user.findFirst({
+    where: {
+      username: params.username
+    }
+  })
+
+  if (!usernameUserId) return notFound()
+
+  const subscription = !session?.user
+    ? undefined
+    : await db.subscription.findFirst({
+        where: {
+          region: usernameUserId.id,
+          regionType: RegionType.USER,
+          user: {
+            id: session.user.id,
+          },
+        },
+      })
+
+  const isSubscribed = !!subscription
+
+  if (!subscription) return notFound()
 
   return (
     <>
@@ -65,6 +90,20 @@ export default async function UserHistory({ params }: UserHistoryProps) {
               past posts.
             </p>
           </div>
+          <SubscribeLeaveToggle
+              isSubscribed={isSubscribed}
+              region={params.username}
+              regionType={RegionType.USER}
+              radius={0}
+              radiusUnits='miles'
+            />
+          {/* <Button
+            className={buttonVariants({
+              className: 'w-full mt-4 mb-6 bg-[#0000E5]',
+            })}
+            onClick={handleSubscribe}>
+            Subscribe to u/{params.username}
+          </Button> */}
 
           <Link
             className={buttonVariants({
