@@ -25,6 +25,7 @@ import {
 import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 import { Building2, ChevronDown, Landmark, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { User } from '@prisma/client'
 
 interface SearchBarProps {}
 
@@ -58,7 +59,11 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     queryFn: async () => {
       if (!input) return []
       const { data } = await axios.get(`/api/search?q=${input}&searchType=${searchType}`)
-      return data.addresses as (AutoCompleteAddress)[]
+      if(searchType != 'User'){
+        return data.addresses as (AutoCompleteAddress)[]
+      } else {
+        return data as (User)[]
+      }
     },
     queryKey: ['search-query'],
     enabled: false,
@@ -88,21 +93,31 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-md'>
           {isFetched && <CommandEmpty>No results found.</CommandEmpty>}
           {(queryResults?.length ?? 0) > 0 ? (
-            <CommandGroup heading='Communities'>
-              {queryResults?.map((autoCompleteAddress) => (
+            <CommandGroup>
+              {queryResults?.map((autoComplete) => {
+                if((autoComplete as AutoCompleteAddress).formattedAddress){
+                return (
                 <CommandItem
                   onSelect={(e) => {
                     router.push(`/r/${e}`)
                     router.refresh()
                   }}
-                  key={autoCompleteAddress.latitude + autoCompleteAddress.longitude}
-                  value={autoCompleteAddress.formattedAddress}>
-                  {autoCompleteAddress.layer === "address" || autoCompleteAddress.layer === "street" ? <MapPin className='mr-2 h-4 w-4' /> : null}
-                  {autoCompleteAddress.layer === "locality" || autoCompleteAddress.layer === "postalCode" || autoCompleteAddress.layer === "county" || autoCompleteAddress.layer === "neighborhood" ? <Building2 className='mr-2 h-4 w-4' /> : null}
-                  {autoCompleteAddress.layer === "state" || autoCompleteAddress.layer === "country" ? <Landmark className='mr-2 h-4 w-4' /> : null}
-                  <a href={`/r/${autoCompleteAddress.formattedAddress}`}>{autoCompleteAddress.formattedAddress}</a>
-                </CommandItem>
-              ))}
+                  key={(autoComplete as AutoCompleteAddress).latitude + (autoComplete as AutoCompleteAddress).longitude}
+                  value={(autoComplete as AutoCompleteAddress).formattedAddress}>
+                  {(autoComplete as AutoCompleteAddress).layer === "address" || (autoComplete as AutoCompleteAddress).layer === "street" ? <MapPin className='mr-2 h-4 w-4' /> : null}
+                  {(autoComplete as AutoCompleteAddress).layer === "locality" || (autoComplete as AutoCompleteAddress).layer === "postalCode" || (autoComplete as AutoCompleteAddress).layer === "county" || (autoComplete as AutoCompleteAddress).layer === "neighborhood" ? <Building2 className='mr-2 h-4 w-4' /> : null}
+                  {(autoComplete as AutoCompleteAddress).layer === "state" || (autoComplete as AutoCompleteAddress).layer === "country" ? <Landmark className='mr-2 h-4 w-4' /> : null}
+                  <a href={`/r/${(autoComplete as AutoCompleteAddress).formattedAddress}`}>{(autoComplete as AutoCompleteAddress).formattedAddress}</a>
+                </CommandItem>)
+              } else if((autoComplete as User).username){
+                return (
+                <CommandItem
+                  key={(autoComplete as User).id}
+                  value={(autoComplete as User).username}>
+                   <Users className='mr-2 h-4 w-4' />
+                  <a className='w-full' href={`/u/${(autoComplete as User).username}`}>u/{(autoComplete as User).username}</a>
+                </CommandItem>)
+              }})}
             </CommandGroup>
           ) : null}
         </CommandList>
@@ -123,13 +138,13 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
           Country
         </DropdownMenuItem>
 
-        {/* <DropdownMenuItem onClick={()=>setSearchType("State")}>
+        <DropdownMenuItem onClick={()=>setSearchType("State")}>
           State
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
 
-        {/* <DropdownMenuItem onClick={()=>setSearchType("County")}>
+        <DropdownMenuItem onClick={()=>setSearchType("County")}>
           County
-        </DropdownMenuItem> */}
+        </DropdownMenuItem>
 
         <DropdownMenuItem onClick={()=>setSearchType("City")}>
           City

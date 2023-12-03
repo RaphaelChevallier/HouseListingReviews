@@ -30,6 +30,8 @@ const Post: FC<PostProps> = ({
 
   return (
     <div className='rounded-md bg-white shadow'>
+    <a href={`/r/post/${post.id}`}>
+
       <div className='px-6 py-4 flex justify-between'>
         <PostVoteClient
           postId={post.id}
@@ -52,11 +54,16 @@ const Post: FC<PostProps> = ({
             <span>Posted by u/{post.author.username}</span>{' '}
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
-          {/* <a href={`/r/${subredditName}/post/${post.id}`}> */}
-            <h1 className='text-lg font-semibold py-2 leading-6 text-gray-900'>
+            <h1 className='text-2xl font-semibold py-2 leading-6 text-gray-900'>
               {post.title}
             </h1>
-          {/* </a> */}
+          
+          <h3 className='text-sm py-2 leading-6'>
+            <Link className='text-blue-600 dark:text-blue-500 hover:underline' target='_blank' href={post.listingUrl?? ''}>{post.listingUrl}</Link>
+          </h3>
+          <h3 className={post.content?.blocks.length != 0 ? 'text-md py-2 leading-6 border-b mb-4' : 'text-md py-2 leading-6'}>
+            {post.address}
+          </h3>
 
           <div
             className='relative text-sm max-h-40 w-full overflow-clip'
@@ -69,6 +76,7 @@ const Post: FC<PostProps> = ({
           </div>
         </div>
       </div>
+      </a>
 
       <div className='bg-gray-50 z-20 text-sm px-4 py-4 sm:px-6'>
         <Link

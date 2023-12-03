@@ -2,9 +2,10 @@ import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
 import { Icons } from './Icons'
-import { buttonVariants } from './ui/Button'
+import { Button, buttonVariants } from './ui/Button'
 import { UserAccountNav } from './UserAccountNav'
 import SearchBar from './SearchBar'
+import { Heart } from 'lucide-react'
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions)
@@ -21,6 +22,9 @@ const Navbar = async () => {
         <SearchBar />
 
         {/* actions */}
+
+        <Link href='/donate'> <Button size='default' className='bg-[#FF954F] text-black hover:bg-[#ff7d28]'> Donate <Heart className='ml-2 fill-red-600'/> </Button> </Link>
+
         {session?.user ? (
           <UserAccountNav user={session.user} />
         ) : (

@@ -50,7 +50,7 @@ model User {
   subscriptions Subscription[]
   votes         Vote[]
 
-  username String? @unique
+  username String @unique
 
   image       String?
   accounts    Account[]

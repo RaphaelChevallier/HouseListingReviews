@@ -1,9 +1,12 @@
+import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config'
 import { db } from '@/lib/db'
 import PostFeed from '../PostFeed'
-import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config'
 
-const GeneralFeed = async () => {
+const UserHistoryFeed = async (username: any) => {
   const posts = await db.post.findMany({
+    where: {
+      author: { username: username.user},
+    },
     orderBy: {
       createdAt: 'desc',
     },
@@ -12,10 +15,10 @@ const GeneralFeed = async () => {
       author: true,
       comments: true,
     },
-    take: INFINITE_SCROLL_PAGINATION_RESULTS, // 4 to demonstrate infinite scroll, should be higher in production
+    take: INFINITE_SCROLL_PAGINATION_RESULTS,
   })
 
   return <PostFeed initialPosts={posts} />
 }
 
-export default GeneralFeed
+export default UserHistoryFeed

@@ -19,25 +19,34 @@ export async function GET(req: Request) {
   if (!q) return new Response('Invalid query', { status: 400 })
 
   let results;
+  let dataResults;
   if(searchType != 'user'){
     if(searchType === 'city'){
       searchType = 'locality'
     }
     results = await axios.get(`https://api.radar.io/v1/search/autocomplete?query=${q}&layers=${searchType}`, {headers: headers})
+    dataResults = await results.data
+    if(searchType === 'country'){
+      dataResults.addresses.map((address: any) => {address.formattedAddress = address.addressLabel})
+    } else if (searchType === 'county'){
+      dataResults.addresses.map((address: any) => {address.formattedAddress = address.addressLabel + ", " + address.stateCode + ", " + address.country})
+    } else if (searchType === 'state'){
+      dataResults.addresses.map((address: any) => {address.formattedAddress = address.addressLabel + " - " + address.stateCode + ", " + address.country})
+    }
   } else {
-    return new Response()
+     const users = await db.user.findMany({
+      where: {
+        username: {
+          startsWith: q,
+        },
+      },
+      include: {
+        _count: true,
+      },
+      take: 10,
+    })
+    dataResults = users
   }
-  // const results = await db.subreddit.findMany({
-  //   where: {
-  //     name: {
-  //       startsWith: q,
-  //     },
-  //   },
-  //   include: {
-  //     _count: true,
-  //   },
-  //   take: 5,
-  // })
 
-  return new Response(JSON.stringify(await results.data))
+  return new Response(JSON.stringify(dataResults))
 }

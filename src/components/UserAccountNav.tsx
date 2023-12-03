@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { User } from 'next-auth'
 import { signOut } from 'next-auth/react'
 
 import {
@@ -12,9 +11,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { UserAvatar } from '@/components/UserAvatar'
+import { User } from '@prisma/client'
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: Pick<User, 'name' | 'image' | 'email'>
+  user: User
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
@@ -43,7 +43,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href='/r/create'>Create Community</Link>
+          <Link href={`/u/${user.username}`}>Your Posts</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
