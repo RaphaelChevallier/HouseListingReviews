@@ -5,6 +5,7 @@ import { AutoCompleteAddress } from '@/types/radar'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
 import { usePathname, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
 
 import {
@@ -25,7 +26,7 @@ import {
 import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 import { Building2, ChevronDown, Landmark, MapPin, Users } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { User } from '@prisma/client'
+import { RegionType, User } from '@prisma/client'
 
 interface SearchBarProps {}
 
@@ -98,24 +99,25 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
                 if((autoComplete as AutoCompleteAddress).formattedAddress){
                 return (
                 <CommandItem
-                  onSelect={(e) => {
-                    router.push(`/r/${e}`)
+                  onSelect={() => {
                     router.refresh()
                   }}
                   key={(autoComplete as AutoCompleteAddress).latitude + (autoComplete as AutoCompleteAddress).longitude}
                   value={(autoComplete as AutoCompleteAddress).formattedAddress}>
-                  {(autoComplete as AutoCompleteAddress).layer === "address" || (autoComplete as AutoCompleteAddress).layer === "street" ? <MapPin className='mr-2 h-4 w-4' /> : null}
-                  {(autoComplete as AutoCompleteAddress).layer === "locality" || (autoComplete as AutoCompleteAddress).layer === "postalCode" || (autoComplete as AutoCompleteAddress).layer === "county" || (autoComplete as AutoCompleteAddress).layer === "neighborhood" ? <Building2 className='mr-2 h-4 w-4' /> : null}
-                  {(autoComplete as AutoCompleteAddress).layer === "state" || (autoComplete as AutoCompleteAddress).layer === "country" ? <Landmark className='mr-2 h-4 w-4' /> : null}
-                  <a href={`/r/${(autoComplete as AutoCompleteAddress).formattedAddress}`}>{(autoComplete as AutoCompleteAddress).formattedAddress}</a>
+                  {(autoComplete as AutoCompleteAddress).layer === "address" || (autoComplete as AutoCompleteAddress).layer === "street" ? <Link className='flex' href={`/${RegionType.ADDRESS}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><MapPin className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
+                  {(autoComplete as AutoCompleteAddress).layer === "locality" || (autoComplete as AutoCompleteAddress).layer === "neighborhood" ? <Link className='flex' href={`/${RegionType.CITY}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><Building2 className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
+                  {(autoComplete as AutoCompleteAddress).layer === "postalCode" ? <Link className='flex' href={`/${RegionType.ZIP}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><Building2 className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
+                  {(autoComplete as AutoCompleteAddress).layer === "county" ? <Link className='flex' href={`/${RegionType.COUNTY}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><Building2 className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
+                  {(autoComplete as AutoCompleteAddress).layer === "state" ? <Link className='flex' href={`/${RegionType.STATE}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><Landmark className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
+                  {(autoComplete as AutoCompleteAddress).layer === "country" ? <Link className='flex' href={`/${RegionType.COUNTRY}/${(autoComplete as AutoCompleteAddress).formattedAddress}`}><Landmark className='mr-2 h-4 w-4' />{(autoComplete as AutoCompleteAddress).formattedAddress}</Link>: null}
                 </CommandItem>)
               } else if((autoComplete as User).username){
                 return (
                 <CommandItem
                   key={(autoComplete as User).id}
-                  value={(autoComplete as User).username}>
+                  value={(autoComplete as User).username?? ''}>
                    <Users className='mr-2 h-4 w-4' />
-                  <a className='w-full' href={`/u/${(autoComplete as User).username}`}>u/{(autoComplete as User).username}</a>
+                  <a className='w-full' href={`/u/${(autoComplete as User).username}`}>{(autoComplete as User).username}</a>
                 </CommandItem>)
               }})}
             </CommandGroup>

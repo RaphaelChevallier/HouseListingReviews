@@ -32,7 +32,6 @@ function formatDistance(token: string, count: number, options?: any): string {
   const result = formatDistanceLocale[
     token as keyof typeof formatDistanceLocale
   ].replace('{{count}}', count.toString())
-
   if (options.addSuffix) {
     if (options.comparison > 0) {
       return 'in ' + result

@@ -1,11 +1,12 @@
-import { db } from '@/lib/db'
+import { db, ExtendedPrismaClient } from '@/lib/db'
+import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { nanoid } from 'nanoid'
 import { NextAuthOptions, getServerSession } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: CustomPrismaAdapter(db as unknown as ExtendedPrismaClient),
   session: {
     strategy: 'jwt',
   },
@@ -66,6 +67,11 @@ export const authOptions: NextAuthOptions = {
       return '/'
     },
   },
+}
+
+function CustomPrismaAdapter(p: ExtendedPrismaClient) {
+  const prismaAdapter = PrismaAdapter(p as unknown as PrismaClient);
+  return prismaAdapter
 }
 
 export const getAuthSession = () => getServerSession(authOptions)

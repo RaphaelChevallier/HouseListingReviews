@@ -30,7 +30,7 @@ const Post: FC<PostProps> = ({
 
   return (
     <div className='rounded-md bg-white shadow'>
-    <a href={`/r/post/${post.id}`}>
+    <a href={`/post/${post.id}`}>
 
       <div className='px-6 py-4 flex justify-between'>
         <PostVoteClient
@@ -51,7 +51,7 @@ const Post: FC<PostProps> = ({
                 <span className='px-1'>•</span>
               </>
             ) : null} */}
-            <span>Posted by u/{post.author.username}</span>{' '}
+            <span>Posted by u/<Link className='hover:underline' href={`/u/${post.author.username}`}>{post.author.username}</Link></span>{' '}
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
             <h1 className='text-2xl font-semibold py-2 leading-6 text-gray-900'>
@@ -62,7 +62,7 @@ const Post: FC<PostProps> = ({
             <Link className='text-blue-600 dark:text-blue-500 hover:underline' target='_blank' href={post.listingUrl?? ''}>{post.listingUrl}</Link>
           </h3>
           <h3 className={post.content?.blocks.length != 0 ? 'text-md py-2 leading-6 border-b mb-4' : 'text-md py-2 leading-6'}>
-            {post.address}
+          <Link className='text-blue-600 dark:text-blue-500 hover:underline' target='_blank' href={`https://www.google.com/maps/place/${post.address}`}>{post.address}</Link>
           </h3>
 
           <div
@@ -80,7 +80,7 @@ const Post: FC<PostProps> = ({
 
       <div className='bg-gray-50 z-20 text-sm px-4 py-4 sm:px-6'>
         <Link
-          href={`/r/post/${post.id}`}
+          href={`/post/${post.id}`}
           className='w-fit flex items-center gap-2'>
           <MessageSquare className='h-4 w-4' /> {commentAmt} comments
         </Link>

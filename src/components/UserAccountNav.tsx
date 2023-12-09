@@ -11,10 +11,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
 import { UserAvatar } from '@/components/UserAvatar'
-import { User } from '@prisma/client'
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: User
+  user: any
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {

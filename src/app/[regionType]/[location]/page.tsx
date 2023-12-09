@@ -7,32 +7,34 @@ import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { RegionType } from '@prisma/client'
+import RegionFeed from '@/components/homepage/RegionFeed'
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
-interface UserHistoryProps {
+interface LocationProps {
   params: {
-    username: string
+    location: string
+    regionType: RegionType
   }
 }
 
-export default async function UserHistory({ params }: UserHistoryProps) {
+export default async function Location({ params }: LocationProps) {
   const session = await getAuthSession()
-  const usernameUserId = await db.user.findFirst({
-    where: {
-      username: params.username
-    }
-  })
+//   const usernameUserId = await db.user.findFirst({
+//     where: {
+//       location: params.location
+//     }
+//   })
 
-  if (!usernameUserId) return notFound()
+//   if (!usernameUserId) return notFound()
 
   const subscription = !session?.user
     ? undefined
     : await db.subscription.findFirst({
         where: {
-          region: usernameUserId.id,
-          regionType: RegionType.USER,
+          region: params.location,
+          regionType: params.regionType,
           user: {
             id: session.user.id,
           },
@@ -45,12 +47,12 @@ export default async function UserHistory({ params }: UserHistoryProps) {
 
   return (
     <>
-      <h1 className='font-bold text-3xl md:text-4xl'>Post History</h1>
+      <h1 className='font-bold text-3xl md:text-4xl'>Region Search</h1>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6'>
         {/* @ts-expect-error server component */}
-        <UserHistoryFeed user={params.username}/>
+        <RegionFeed location={params.location} regionType={params.regionType} radius={5} radiusUnits={'km'}/>
         
-        {session && session.user.username === params.username ?
+        {session ?
           <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
             <div className='bg-emerald-100 px-6 py-4'>
               <p className='font-semibold py-3 flex items-center gap-1.5'>
@@ -80,23 +82,23 @@ export default async function UserHistory({ params }: UserHistoryProps) {
         <div className='bg-emerald-100 px-6 py-4'>
           <p className='font-semibold py-3 flex items-center gap-1.5'>
             <History className='h-4 w-4' />
-            u/{params.username}&apos;s Post History
+            u/{params.location}&apos;s Post History
           </p>
         </div>
         <dl className='-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6'>
           <div className='flex justify-between gap-x-4 py-3'>
             <p className='text-zinc-500'>
-              Here are u/{params.username}&apos;s prior posts. Come here to check in with their
+              Here are u/{params.location}&apos;s prior posts. Come here to check in with their
               past posts.
             </p>
           </div>
-          <SubscribeLeaveToggle
+          {/* <SubscribeLeaveToggle
               isSubscribed={isSubscribed}
               region={params.username}
               regionType={RegionType.USER}
               radius={0}
               radiusUnits='miles'
-            />
+            /> */}
 
           <Link
             className={buttonVariants({

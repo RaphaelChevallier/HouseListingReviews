@@ -60,7 +60,7 @@ const SubscribeLeaveToggle = ({
       })
       toast({
         title: 'Subscribed!',
-        description: `You are now subscribed to r/${region}`,
+        description: `You are now subscribed to ${region}`,
       })
     },
   })
@@ -99,17 +99,17 @@ const SubscribeLeaveToggle = ({
 
   return isSubscribed ? (
     <Button
-      className='w-full mt-1 mb-4'
+      className='w-full mt-1 mb-4 bg-red-600 hover:bg-red-700'
       isLoading={isUnsubLoading}
       onClick={() => unsubscribe()}>
-      Leave community
+      Unsubscribe to {region}
     </Button>
   ) : (
     <Button
-      className='w-full mt-1 mb-4'
+      className='w-full mt-1 mb-4 bg-green-600 hover:bg-green-700'
       isLoading={isSubLoading}
       onClick={() => subscribe()}>
-      Join to post
+      Subscribe to {region}
     </Button>
   )
 }
