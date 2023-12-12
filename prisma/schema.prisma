@@ -62,6 +62,13 @@ model User {
   CommentVote CommentVote[]
 }
 
+enum RadiusUnits {
+  METERS
+  KILOMETERS
+  MILES
+  YARDS
+}
+
 enum RegionType {
   CITY
   ZIP
@@ -77,7 +84,7 @@ model Subscription {
   userId      String
   region      String
   radius      Int?
-  radiusUnits String?
+  radiusUnits RadiusUnits?
   regionType  RegionType
 
   @@id([userId])
