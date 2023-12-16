@@ -1,15 +1,13 @@
-import UserHistoryFeed from "@/components/homepage/UserHistoryFeed";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { buttonVariants } from "@/components/ui/Button";
 import { getAuthSession } from "@/lib/auth";
 import { History } from "lucide-react";
 import SubscribeLeaveToggle from "@/components/SubscribeLeaveToggle";
-import Image from "next/image"
 import { db } from "@/lib/db";
 import Link from "next/link";
-import { RegionType } from "@prisma/client";
+import { RadiusUnits, RegionType } from "@prisma/client";
 import RegionFeed from "@/components/homepage/RegionFeed";
 import RadarMap from "@/components/RadarMap";
-
+import RadiusUnitsChange from "@/components/RadiusUnitsChange";
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
@@ -17,18 +15,15 @@ interface LocationProps {
   params: {
     location: string;
     regionType: RegionType;
-  };
+  },
+  searchParams?: {
+    radius?: number;
+    radiusUnits?: RadiusUnits;
+  }
 }
 
-export default async function Location({ params }: LocationProps) {
+export default async function Location({ params, searchParams }: LocationProps) {
   const session = await getAuthSession();
-  //   const usernameUserId = await db.user.findFirst({
-  //     where: {
-  //       location: params.location
-  //     }
-  //   })
-
-  //   if (!usernameUserId) return notFound()
 
   const subscription = !session?.user
     ? undefined
@@ -42,20 +37,21 @@ export default async function Location({ params }: LocationProps) {
         },
       });
 
+
   const isSubscribed = !!subscription;
 
   // if (!subscription) return notFound()
 
   return (
     <>
-      <h1 className="font-bold text-3xl md:text-4xl">Region Search</h1>
+      <h1 className="font-bold text-3xl md:text-4xl">Region Search: {decodeURIComponent(params.location)}</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6">
         {/* @ts-expect-error server component */}
         <RegionFeed
           location={params.location}
           regionType={params.regionType}
-          radius={5}
-          radiusUnits={"KILOMETERS"}
+          radius={searchParams?.radius? searchParams.radius : 5}
+          radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}
         />
 
         {session ? (
@@ -63,22 +59,23 @@ export default async function Location({ params }: LocationProps) {
             <div className="bg-emerald-100 px-6 py-4">
               <p className="font-semibold py-3 flex items-center gap-1.5">
                 <History className="h-4 w-4" />
-                Posts near: {decodeURIComponent(params.location)}
+                {decodeURIComponent(params.location)}
               </p>
             </div>
             <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
               <div className="flex justify-between gap-x-4 py-3">
                 <p className="text-zinc-500">
                   Posts in the region that you chose. Here to check in with the
-                  region subscribe to keep track in your main feed!
+                  region and subscribe to keep track in your main feed!
                 </p>
               </div>
+              <RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/>
               <SubscribeLeaveToggle
                 isSubscribed={isSubscribed}
                 region={decodeURIComponent(params.location)}
                 regionType={params.regionType}
-                radius={0}
-                radiusUnits="miles"
+                radius={searchParams?.radius? searchParams.radius : 5}
+                radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}
               />
 
               <Link
@@ -90,7 +87,7 @@ export default async function Location({ params }: LocationProps) {
                 Create Post
               </Link>
             </dl>
-            <RadarMap/>
+            <RadarMap location={params.location} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
 
           </div>
         ) : (
@@ -98,7 +95,7 @@ export default async function Location({ params }: LocationProps) {
             <div className="bg-emerald-100 px-6 py-4">
               <p className="font-semibold py-3 flex items-center gap-1.5">
                 <History className="h-4 w-4" />
-                Posts near: {decodeURIComponent(params.location)}
+                {decodeURIComponent(params.location)}
               </p>
             </div>
             <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
@@ -108,7 +105,6 @@ export default async function Location({ params }: LocationProps) {
                   region subscribe to keep track in your main feed!
                 </p>
               </div>
-              <RadarMap/>
 
               <Link
                 className={buttonVariants({
@@ -119,6 +115,7 @@ export default async function Location({ params }: LocationProps) {
                 Create Post
               </Link>
             </dl>
+            <RadarMap location={params.location} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
           </div>
         )}
       </div>

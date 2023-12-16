@@ -9,36 +9,40 @@ export async function GET(req: Request) {
 
   let followedCommunitiesIds: string[] = []
 
-  // if (session) {
-  //   const followedCommunities = await db.subscription.findMany({
-  //     where: {
-  //       userId: session.user.id,
-  //     },
-  //   })
+  if (session) {
+    const subscriptions = await db.subscription.findMany({
+      where: {
+        userId: session.user.id,
+      },
+    })
 
-  //   followedCommunitiesIds = followedCommunities.map((sub) => sub.region)
-  // }
+    followedCommunitiesIds = subscriptions.map((sub) => sub.region)
+  }
 
   try {
-    const { limit, page } = z
+    const { limit, page, region, regionType } = z
       .object({
         limit: z.string(),
         page: z.string(),
+        regionType: z.string().nullish().optional(),
+        region: z.string().nullish().optional(),
       })
       .parse({
         limit: url.searchParams.get('limit'),
         page: url.searchParams.get('page'),
+        region: url.searchParams.get('region'),
+        regionType: url.searchParams.get('regionType'),
       })
 
     let whereClause = {}
 
-    // if (subredditName) {
-    //   whereClause = {
-    //     subreddit: {
-    //       name: subredditName,
-    //     },
-    //   }
-    // } else if (session) {
+    if (regionType === "USER") {
+      whereClause = {
+        regionType: regionType,
+        region: region
+      }
+    }
+    // else if (session) {
     //   whereClause = {
     //     subreddit: {
     //       id: {
@@ -55,7 +59,6 @@ export async function GET(req: Request) {
         createdAt: 'desc',
       },
       include: {
-        // subreddit: true,
         votes: true,
         author: true,
         comments: true,

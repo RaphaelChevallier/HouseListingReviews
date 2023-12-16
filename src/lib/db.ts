@@ -107,7 +107,7 @@ const extendedPrismaClient = () => {
               array_agg(cv."userId") as "commentVote_userId", array_agg(cv."createdAt") as "commentVote_createdAt", array_agg(cv."updatedAt") as "commentVote_updatedAt", array_agg(cv."userId") as "commentVote_userId", array_agg(cv."commentId") as "commentVote_commentId", array_agg(cv."type") as "commentVote_type",
               array_agg(v."userId") as "postVote_userId", array_agg(v."createdAt") as "postVote_createdAt", array_agg(v."updatedAt") as "postVote_updatedAt", array_agg(v."postId") as "postVote_postId", array_agg(v."type") as "postVote_type"
               FROM "Post" as p LEFT JOIN "User" as u ON p."authorId" = u."id" LEFT JOIN "Comment" as c ON p."id" = c."postId" LEFT JOIN "Vote" as v ON p."id" = v."postId" LEFT JOIN "CommentVote" as cv ON c."id" = cv."commentId"
-              WHERE ST_DistanceSphere(location::geometry, ST_MakePoint(${longitude},${latitude})) <= ${milesRadius}
+              WHERE ST_DistanceSphere(location::geometry, ST_MakePoint(${longitude},${latitude})) <= Prisma.Decimal(${milesRadius})
               GROUP BY p."id", u."id"
               ORDER BY p."createdAt" DESC
               LIMIT ${INFINITE_SCROLL_PAGINATION_RESULTS}`

@@ -9,13 +9,15 @@ import { Loader2 } from 'lucide-react'
 import { FC, useEffect, useRef } from 'react'
 import Post from './Post'
 import { useSession } from 'next-auth/react'
+import { RegionType } from '@prisma/client'
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[]
-  subredditName?: string
+  region?: string,
+  regionType?: RegionType
 }
 
-const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
+const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType }) => {
   const lastPostRef = useRef<HTMLElement>(null)
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
@@ -28,7 +30,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
     async ({ pageParam = 1 }) => {
       const query =
         `/api/posts?limit=${INFINITE_SCROLL_PAGINATION_RESULTS}&page=${pageParam}` +
-        (!!subredditName ? `&subredditName=${subredditName}` : '')
+        (!!region ? `&region=${region}` : '') + (!!regionType && !!region ? `&regionType=${regionType}` : '')
 
       const { data } = await axios.get(query)
       return data as ExtendedPost[]

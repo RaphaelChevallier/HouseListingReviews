@@ -75,7 +75,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
   }, [pathname])
 
   return (
-    <div className='flex w-[38em]'>
+    <div className='flex w-[35em] items-center'>
     <Command
       ref={commandRef}
       className='relative rounded-lg border max-w-lg z-50 overflow-visible'>
@@ -160,7 +160,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
           User
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>    
+    </DropdownMenu>
     </div>
   )
 }

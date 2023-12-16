@@ -1,4 +1,3 @@
-import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config'
 import { db } from '@/lib/db'
 import PostFeed from '../PostFeed'
 import { RegionType, RadiusUnits } from '@prisma/client'
@@ -11,7 +10,7 @@ interface RegionParams {
       radiusUnits: RadiusUnits
   }
 
-function convertToMiles(radius: number, radiusUnits: RadiusUnits){
+function convertToMiles(radius: number, radiusUnits: RadiusUnits): number{
     if (radiusUnits === RadiusUnits.KILOMETERS) {
         return radius / 1.60934;
     } else if (radiusUnits === RadiusUnits.METERS) {
@@ -19,7 +18,7 @@ function convertToMiles(radius: number, radiusUnits: RadiusUnits){
     } else if (radiusUnits === RadiusUnits.YARDS) {
         return radius / 1760;
     } else {
-        return radius;
+        return radius / 1;
     }
 }
 
@@ -39,9 +38,9 @@ const RegionFeed = async (params: RegionParams) => {
             } else if (params.regionType === RegionType.ZIP){
                 type = "postalCode"
             } else {
-                type = params.regionType
+                type = params.regionType.toLowerCase()
             }
-        results = await axios.get(`https://api.radar.io/v1/geocode/forward?query=${params.location}&layers=${type.toLowerCase()}`, {headers: headers})
+        results = await axios.get(`https://api.radar.io/v1/geocode/forward?query=${params.location}&layers=${type}`, {headers: headers})
         dataResults = await results.data
         }
     const posts = await db.post.findPointsWithin(
