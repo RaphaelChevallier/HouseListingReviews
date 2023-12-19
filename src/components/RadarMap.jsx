@@ -2,7 +2,6 @@
 import React from 'react';
 import Radar from 'radar-sdk-js';
 import 'radar-sdk-js/dist/radar.css';
-import axios from 'axios'
 import { RadiusUnits } from '@prisma/client';
 
 let createGeoJSONCircle = function(center, radiusInKm, points) {
@@ -44,16 +43,6 @@ let createGeoJSONCircle = function(center, radiusInKm, points) {
   };
 };
 
-const getPreciseCoordinates = async (location) => {
-  const headers = {
-    Authorization: 'prj_test_pk_372da21bdc800cb008116a62df37f05d3f2a32b0',
-    };
-
-    let results = await axios.get(`https://api.radar.io/v1/geocode/forward?query=${location}`, {headers: headers})
-    let dataResults = await results.data
-    return dataResults
-}
-
 function convertToKm(radius, radiusUnits){
   if (radiusUnits === RadiusUnits.MILES) {
       return radius * 1.60934;
@@ -66,9 +55,8 @@ function convertToKm(radius, radiusUnits){
   }
 }
 
-async function build(location, radius, radiusUnits) {
+async function build(coordinates, radius, radiusUnits) {
   const radiusInKm = convertToKm(parseFloat(radius), radiusUnits)
-  const locationData = await getPreciseCoordinates(location)
   Radar.initialize('prj_test_pk_372da21bdc800cb008116a62df37f05d3f2a32b0');
   let zoom = 12
   if(radiusInKm >= 0 && radiusInKm < .45){
@@ -105,17 +93,17 @@ async function build(location, radius, radiusUnits) {
   const map = new Radar.ui.map({
     container: 'map',
     style: 'radar-default-v1',
-    center: locationData.addresses[0].geometry.coordinates,
+    center: coordinates,
     zoom: zoom,
   })
 
 
   map.on("load", function () {
     Radar.ui.marker({ text: 'Radar HQ' })
-    .setLngLat(locationData.addresses[0].geometry.coordinates)
+    .setLngLat(coordinates)
     .addTo(map);
 
-    map.addSource("polygon", createGeoJSONCircle(locationData.addresses[0].geometry.coordinates, radiusInKm));
+    map.addSource("polygon", createGeoJSONCircle(coordinates, radiusInKm));
 
     map.addLayer({
         "id": "polygon",

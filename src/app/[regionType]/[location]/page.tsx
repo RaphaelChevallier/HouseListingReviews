@@ -10,6 +10,7 @@ import RadarMap from "@/components/RadarMap";
 import RadiusUnitsChange from "@/components/RadiusUnitsChange";
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
+import axios from 'axios';
 
 interface LocationProps {
   params: {
@@ -29,7 +30,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
     ? undefined
     : await db.subscription.findFirst({
         where: {
-          region: params.location,
+          region: decodeURIComponent(params.location),
           regionType: params.regionType,
           user: {
             id: session.user.id,
@@ -39,6 +40,19 @@ export default async function Location({ params, searchParams }: LocationProps) 
 
 
   const isSubscribed = !!subscription;
+
+  const getPreciseCoordinates = async (location: string) => {
+    const headers = {
+      Authorization: 'prj_test_pk_372da21bdc800cb008116a62df37f05d3f2a32b0',
+      };
+  
+      let results = await axios.get(`https://api.radar.io/v1/geocode/forward?query=${location}`, {headers: headers})
+      let dataResults = await results.data
+      return dataResults
+  }
+
+  const locationData = await getPreciseCoordinates(params.location)
+
 
   // if (!subscription) return notFound()
 
@@ -76,6 +90,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
                 regionType={params.regionType}
                 radius={searchParams?.radius? searchParams.radius : 5}
                 radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}
+                coordinates={locationData.addresses[0].geometry.coordinates}
               />
 
               <Link
@@ -87,7 +102,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
                 Create Post
               </Link>
             </dl>
-            <RadarMap location={params.location} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
+            <RadarMap location={locationData.addresses[0].geometry.coordinates} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
 
           </div>
         ) : (
@@ -115,7 +130,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
                 Create Post
               </Link>
             </dl>
-            <RadarMap location={params.location} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
+            <RadarMap location={locationData.addresses[0].geometry.coordinates} radius={searchParams?.radius? searchParams.radius : 5} radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}/>
           </div>
         )}
       </div>

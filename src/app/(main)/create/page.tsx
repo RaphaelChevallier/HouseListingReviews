@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { toast } from '@/hooks/use-toast'
 import { useCustomToasts } from '@/hooks/use-custom-toasts'
-import { CreateSubredditPayload } from '@/lib/validators/subscription'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
@@ -17,7 +16,7 @@ const Page = () => {
 
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
-      const payload: CreateSubredditPayload = {
+      const payload: any = {
         name: input,
       }
 

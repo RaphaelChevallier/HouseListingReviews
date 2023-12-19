@@ -87,8 +87,8 @@ function setNewUnitValue(value: string){
               >
                 <option value={RadiusUnits.KILOMETERS}>Kilometers</option>
                 <option value={RadiusUnits.MILES}>Miles</option>
-                <option value={RadiusUnits.METERS}>Meters</option>
-                <option value={RadiusUnits.YARDS}>Yards</option>
+                {/* <option value={RadiusUnits.METERS}>Meters</option>
+                <option value={RadiusUnits.YARDS}>Yards</option> */}
               </select>
             </div>
           }

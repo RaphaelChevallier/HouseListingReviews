@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider   = "postgres"
   url        = env("DATABASE_URL")
-  extensions = [postgis]
+  extensions = [postgis(schema: "public")]
 }
 
 enum VoteType {
@@ -83,9 +83,12 @@ model Subscription {
   user        User       @relation(fields: [userId], references: [id])
   userId      String
   region      String
-  radius      Int?
+  radius      Decimal?
   radiusUnits RadiusUnits?
   regionType  RegionType
+  location    Unsupported("geography(Point, 4326)")?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @default(now())
 
   @@id([userId])
 }

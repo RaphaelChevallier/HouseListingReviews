@@ -10,14 +10,19 @@ import { FC, useEffect, useRef } from 'react'
 import Post from './Post'
 import { useSession } from 'next-auth/react'
 import { RegionType } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[]
   region?: string,
-  regionType?: RegionType
+  regionType?: RegionType,
+  latitude?: Decimal,
+  longitude?: Decimal,
+  radius?: number,
+  radiusUnits?: string
 }
 
-const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType }) => {
+const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitude, longitude, radius, radiusUnits }) => {
   const lastPostRef = useRef<HTMLElement>(null)
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
@@ -30,7 +35,9 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType }) => {
     async ({ pageParam = 1 }) => {
       const query =
         `/api/posts?limit=${INFINITE_SCROLL_PAGINATION_RESULTS}&page=${pageParam}` +
-        (!!region ? `&region=${region}` : '') + (!!regionType && !!region ? `&regionType=${regionType}` : '')
+        (!!region ? `&region=${region}` : '') + (!!regionType && !!region ? `&regionType=${regionType}` : '') + (!!regionType && !!region && !!latitude ? `&latitude=${latitude}` : '') +
+        (!!regionType && !!region && !!longitude ? `&longitude=${longitude}` : '') + (!!regionType && !!region && !!longitude && !!latitude && !!radius ? `&radius=${radius}` : '') +
+        (!!regionType && !!region && !!longitude && !!latitude && !!radiusUnits ? `&radiusUnits=${radiusUnits}` : '')
 
       const { data } = await axios.get(query)
       return data as ExtendedPost[]
@@ -54,6 +61,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType }) => {
 
   return (
     <ul className='flex flex-col col-span-2 space-y-6'>
+      {posts.length === 0 ? "This region does not contain any posts yet. Be the first to post for here!" : null}
       {posts.map((post, index) => {
         const votesAmt = post.votes.reduce((acc, vote) => {
           if (vote.type === 'UP') return acc + 1

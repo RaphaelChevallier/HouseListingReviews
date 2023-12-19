@@ -7,13 +7,16 @@ import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 import { useToast } from '../hooks/use-toast'
 import { useCustomToasts } from '@/hooks/use-custom-toasts'
+import { Decimal } from '@prisma/client/runtime/library'
+import { RadiusUnits } from '@prisma/client'
 
 interface SubscribeLeaveToggleProps {
   isSubscribed: boolean
   region: string
   regionType: string
   radius: number
-  radiusUnits: string
+  radiusUnits: RadiusUnits
+  coordinates?: Array<Decimal>
 }
 
 const SubscribeLeaveToggle = ({
@@ -21,7 +24,8 @@ const SubscribeLeaveToggle = ({
   region,
   regionType,
   radius,
-  radiusUnits
+  radiusUnits,
+  coordinates,
 }: SubscribeLeaveToggleProps) => {
   const { toast } = useToast()
   const { loginToast } = useCustomToasts()
@@ -33,7 +37,8 @@ const SubscribeLeaveToggle = ({
         region,
         regionType,
         radius,
-        radiusUnits
+        radiusUnits,
+        coordinates
       }
 
       const { data } = await axios.post('/api/subscribe', payload)
@@ -102,7 +107,7 @@ const SubscribeLeaveToggle = ({
       className='w-full mt-1 mb-4 bg-red-600 hover:bg-red-700'
       isLoading={isUnsubLoading}
       onClick={() => unsubscribe()}>
-      Unsubscribe to {region}
+      Unsubscribe from {region}
     </Button>
   ) : (
     <Button

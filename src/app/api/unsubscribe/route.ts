@@ -29,8 +29,6 @@ export async function POST(req: Request) {
         userId: session.user.id,
         region: region,
         regionType: regionType,
-        radius: radius,
-        radiusUnits: radiusUnits
       },
     })
 
@@ -48,8 +46,6 @@ export async function POST(req: Request) {
         userId: session.user.id,
         region,
         regionType: regionType,
-        radius: radius,
-        radiusUnits: radiusUnits
       },
     })
 

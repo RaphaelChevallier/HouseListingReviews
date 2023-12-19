@@ -5,6 +5,7 @@ export const SubscriptionValidator = z.object({
   regionType: z.string(),
   radius: z.number(),
   radiusUnits: z.string(),
+  coordinates: z.any()
 })
 
 export type SubscribeToSubredditPayload = z.infer<

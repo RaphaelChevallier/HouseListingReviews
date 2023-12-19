@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import PostFeed from '../PostFeed'
+import { ExtendedPost } from '@/types/db'
 import { RegionType, RadiusUnits } from '@prisma/client'
 import axios, { AxiosRequestHeaders } from 'axios'
 
@@ -10,7 +11,7 @@ interface RegionParams {
       radiusUnits: RadiusUnits
   }
 
-function convertToMiles(radius: number, radiusUnits: RadiusUnits): number{
+export function convertToMiles(radius: number, radiusUnits: RadiusUnits): number{
     if (radiusUnits === RadiusUnits.KILOMETERS) {
         return radius / 1.60934;
     } else if (radiusUnits === RadiusUnits.METERS) {
@@ -49,9 +50,7 @@ const RegionFeed = async (params: RegionParams) => {
         convertToMiles(params.radius, params.radiusUnits)
       )
 
-      console.log(posts)
-
-  return <PostFeed initialPosts={posts} />
+  return <PostFeed initialPosts={posts} region={params.location} regionType={type} latitude={dataResults.addresses[0].latitude} longitude={dataResults.addresses[0].longitude} radius={params.radius} radiusUnits={params.radiusUnits} />
 }
 
 export default RegionFeed
