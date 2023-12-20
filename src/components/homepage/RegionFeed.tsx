@@ -11,13 +11,13 @@ interface RegionParams {
       radiusUnits: RadiusUnits
   }
 
-export function convertToMiles(radius: number, radiusUnits: RadiusUnits): number{
+  export function convertToMeters(radius: number, radiusUnits: RadiusUnits): number{
     if (radiusUnits === RadiusUnits.KILOMETERS) {
-        return radius / 1.60934;
-    } else if (radiusUnits === RadiusUnits.METERS) {
-        return radius / 1609.34;
+        return radius * 1000;
+    } else if (radiusUnits === RadiusUnits.MILES) {
+        return radius * 1609.34;
     } else if (radiusUnits === RadiusUnits.YARDS) {
-        return radius / 1760;
+        return radius / 1.094;
     } else {
         return radius / 1;
     }
@@ -47,7 +47,7 @@ const RegionFeed = async (params: RegionParams) => {
     const posts = await db.post.findPointsWithin(
         dataResults.addresses[0].latitude,
         dataResults.addresses[0].longitude,
-        convertToMiles(params.radius, params.radiusUnits)
+        convertToMeters(params.radius, params.radiusUnits)
       )
 
   return <PostFeed initialPosts={posts} region={params.location} regionType={type} latitude={dataResults.addresses[0].latitude} longitude={dataResults.addresses[0].longitude} radius={params.radius} radiusUnits={params.radiusUnits} />

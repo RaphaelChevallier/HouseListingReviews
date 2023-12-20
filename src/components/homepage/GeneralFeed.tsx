@@ -7,6 +7,7 @@ const GeneralFeed = async () => {
     orderBy: {
       createdAt: 'desc',
     },
+    distinct: ['id'],
     include: {
       votes: true,
       author: true,

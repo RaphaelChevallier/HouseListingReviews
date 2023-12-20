@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const { title,listingUrl, address, streetAddress, postalCode, city, country, county, longitude, latitude, content } = PostValidator.parse(body)
+    const { title,listingUrl, address, stateOrProvince, streetAddress, postalCode, city, country, county, longitude, latitude, content } = PostValidator.parse(body)
 
     const session = await getAuthSession()
 
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
         title,
         listingUrl,
         address,
+        stateOrProvince,
         streetAddress,
         postalCode,
         city,

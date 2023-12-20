@@ -58,7 +58,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
 
   return (
     <>
-      <h1 className="font-bold text-3xl md:text-4xl">Region Search: {decodeURIComponent(params.location)}</h1>
+      <h1 className="font-bold text-3xl md:text-4xl">{decodeURIComponent(params.location)}</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6">
         {/* @ts-expect-error server component */}
         <RegionFeed
@@ -83,7 +83,6 @@ export default async function Location({ params, searchParams }: LocationProps) 
                   region and subscribe to keep track in your main feed!
                 </p>
               </div>
-              <RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/>
               <SubscribeLeaveToggle
                 isSubscribed={isSubscribed}
                 region={decodeURIComponent(params.location)}
@@ -92,6 +91,9 @@ export default async function Location({ params, searchParams }: LocationProps) 
                 radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}
                 coordinates={locationData.addresses[0].geometry.coordinates}
               />
+              <p className="flex justify-center items-center">With A:</p>
+              <RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/>
+
 
               <Link
                 className={buttonVariants({

@@ -18,10 +18,26 @@ const CustomFeed = async () => {
 
   const posts = await db.post.findMany({
     where: {
-      city: {
-          in: followedCommunities.map((sub) => sub.region),
+      country:{
+        in: followedCommunities.filter(x=> x.regionType === 'COUNTRY').map(sub => (sub.region)),
       },
+      city: {
+          in: followedCommunities.filter(x=> x.regionType === 'CITY').map(sub => (sub.region)),
+      },
+      county: {
+        in: followedCommunities.filter(x=> x.regionType === 'COUNTY').map(sub => (sub.region)),
+      },
+      postalCode: {
+        in: followedCommunities.filter(x=> x.regionType === 'ZIP').map(sub => (sub.region)),
+      },
+      stateOrProvince: {
+        in: followedCommunities.filter(x=> x.regionType === 'STATE').map(sub => (sub.region))
+      },
+      authorId: {
+        in: followedCommunities.filter(x=> x.regionType === 'USER').map(sub => (sub.region))
+      }
     },
+    distinct: ['id'],
     orderBy: {
       createdAt: 'desc',
     },

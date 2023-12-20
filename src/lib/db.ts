@@ -12,6 +12,7 @@ type LocationPoint = {
 
 const extendedPrismaClient = () => {
   const prisma = new PrismaClient({
+    log: ['error']
   });
 
   const extendedPrisma = prisma.$extends({
@@ -22,6 +23,7 @@ const extendedPrismaClient = () => {
             title: String,
             listingUrl: String | undefined,
             address: String,
+            state: String,
             streetAddress: String,
             postalCode: String,
             city: String,
@@ -38,21 +40,23 @@ const extendedPrismaClient = () => {
             latitude: data.data.latitude,
             longitude: data.data.longitude,
           }
+          console.log(poi)
           // Insert the object into the database
           const point = `POINT(${poi.longitude} ${poi.latitude})`
           const id = cuid();
-          await prisma.$queryRaw`INSERT INTO "Post" ("id", "title", "address", "streetAddress", "postalCode", "city", "county", "country", "location", "content", "listingUrl", "authorId") VALUES (${id}, ${data.data.title},${data.data.address}, ${data.data.streetAddress},${data.data.postalCode}, ${data.data.city}, ${data.data.county}, ${data.data.country}, ST_GeomFromText(${point}, 4326), ${data.data.content}, ${data.data.listingUrl}, ${data.data.authorId});`
+          const post = await prisma.$queryRaw`INSERT INTO "Post" ("id", "title", "address", "stateOrProvince", "streetAddress", "postalCode", "city", "county", "country", "location", "content", "listingUrl", "authorId") VALUES (${id}, ${data.data.title},${data.data.address}, ${data.data.state}, ${data.data.streetAddress},${data.data.postalCode}, ${data.data.city}, ${data.data.county}, ${data.data.country}, ST_GeomFromText(${point}, 4326), ${data.data.content}, ${data.data.listingUrl}, ${data.data.authorId});`
           // Return the object
           return poi
         },
-        async findPointsWithin(latitude: Decimal, longitude: Decimal, milesRadius: number, skip?: number) {
-          const milesRadiusDecimal = new Prisma.Decimal(milesRadius);
+        async findPointsWithin(latitude: Decimal, longitude: Decimal, metersRadius: number, skip?: number) {
+          const metersRadiusDecimal = new Prisma.Decimal(metersRadius);
           const result = await prisma.$queryRaw<
             {
               postId: string,
               title: string,
               listingUrl: string,
               address: string,
+              stateOrProvince: string,
               streetAddress: string,
               postalCode: string,
               city: string,
@@ -88,11 +92,11 @@ const extendedPrismaClient = () => {
               postVote_type: VoteType[]
               postVote_updatedAt: Date[],
             }[]
-          >`SELECT p."id" as "postId", p."title", p."listingUrl", p."address", p."streetAddress", p."postalCode", p."city", p."country", p."county", p."content", p."authorId", p."createdAt", p."updatedAt", ST_X(location::geometry), ST_Y(location::geometry), u.*, array_agg(c.text) as "comment_texts", array_agg(c.id) as "comment_ids", array_agg(c."createdAt") as "comment_createdAt", array_agg(c."updatedAt") as "comment_updatedAt", array_agg(c."authorId") as "comment_authorId", array_agg(c."postId") as "comment_postId", array_agg(c."replyToId") as "comment_replyToId", array_agg(c."commentId") as "comment_commentId",
+          >`SELECT p."id" as "postId", p."title", p."listingUrl", p."address", p."streetAddress", p."stateOrProvince", p."postalCode", p."city", p."country", p."county", p."content", p."authorId", p."createdAt", p."updatedAt", ST_X(location::geometry), ST_Y(location::geometry), u.*, array_agg(c.text) as "comment_texts", array_agg(c.id) as "comment_ids", array_agg(c."createdAt") as "comment_createdAt", array_agg(c."updatedAt") as "comment_updatedAt", array_agg(c."authorId") as "comment_authorId", array_agg(c."postId") as "comment_postId", array_agg(c."replyToId") as "comment_replyToId", array_agg(c."commentId") as "comment_commentId",
               array_agg(cv."userId") as "commentVote_userId", array_agg(cv."createdAt") as "commentVote_createdAt", array_agg(cv."updatedAt") as "commentVote_updatedAt", array_agg(cv."userId") as "commentVote_userId", array_agg(cv."commentId") as "commentVote_commentId", array_agg(cv."type") as "commentVote_type",
               array_agg(v."userId") as "postVote_userId", array_agg(v."createdAt") as "postVote_createdAt", array_agg(v."updatedAt") as "postVote_updatedAt", array_agg(v."postId") as "postVote_postId", array_agg(v."type") as "postVote_type"
               FROM "Post" as p LEFT JOIN "User" as u ON p."authorId" = u."id" LEFT JOIN "Comment" as c ON p."id" = c."postId" LEFT JOIN "Vote" as v ON p."id" = v."postId" LEFT JOIN "CommentVote" as cv ON c."id" = cv."commentId"
-              WHERE ST_DistanceSphere(location::geometry, ST_MakePoint(${longitude},${latitude})) <= ${milesRadiusDecimal}
+              WHERE ST_DistanceSphere(location::geometry, ST_MakePoint(${longitude},${latitude})) <= ${metersRadiusDecimal}
               GROUP BY p."id", u."id"
               ORDER BY p."createdAt" DESC
               LIMIT ${INFINITE_SCROLL_PAGINATION_RESULTS}
@@ -150,6 +154,7 @@ const extendedPrismaClient = () => {
               title: data.title,
               listingUrl: data.listingUrl,
               address: data.address,
+              stateOrProvince: data.stateOrProvince,
               streetAddress: data.streetAddress,
               postalCode: data.postalCode,
               city: data.city,
@@ -199,7 +204,7 @@ const extendedPrismaClient = () => {
             }
             // Insert the object into the database
             const point = `POINT(${poi.longitude} ${poi.latitude})`
-            const newSub = await prisma.$queryRaw`INSERT INTO "Subscription" ("userId", "region", "radius", "radiusUnits", "regionType", "location") VALUES (${data.data.userId}, ${data.data.region},${data.data.radius}, ${data.data.radiusUnits}::"RadiusUnits",${data.data.regionType}::"RegionType", ST_GeomFromText(${point}, 4326));`
+            await prisma.$queryRaw`INSERT INTO "Subscription" ("userId", "region", "radius", "radiusUnits", "regionType", "location") VALUES (${data.data.userId}, ${data.data.region},${data.data.radius}, ${data.data.radiusUnits}::"RadiusUnits",${data.data.regionType}::"RegionType", ST_GeomFromText(${point}, 4326));`
             // Return the object
             return poi
         } else {

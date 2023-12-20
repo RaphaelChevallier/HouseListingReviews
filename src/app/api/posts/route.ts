@@ -1,7 +1,7 @@
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { z } from 'zod'
-import { convertToMiles } from '@/components/homepage/RegionFeed'
+import { convertToMeters } from '@/components/homepage/RegionFeed'
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
       const posts = await db.post.findPointsWithin(
         latitude,
         longitude,
-        convertToMiles(radius? radius : 5 , radiusUnits? radiusUnits : "KILOMETERS"),
+        convertToMeters(radius? radius : 5 , radiusUnits? radiusUnits : "KILOMETERS"),
         skip
       )
       return new Response(JSON.stringify(posts))

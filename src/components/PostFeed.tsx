@@ -7,6 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 import { FC, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import Post from './Post'
 import { useSession } from 'next-auth/react'
 import { RegionType } from '@prisma/client'
@@ -23,6 +24,13 @@ interface PostFeedProps {
 }
 
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitude, longitude, radius, radiusUnits }) => {
+  const query = useRouter()
+
+  useEffect(() => {
+        
+  }, [query])
+
+
   const lastPostRef = useRef<HTMLElement>(null)
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
