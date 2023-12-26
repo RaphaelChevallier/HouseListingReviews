@@ -4,10 +4,10 @@
   "private": true,
   "author": "Raphael Chevallier",
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3005",
     "build": "prisma generate && next build",
     "postbuild": "next-sitemap",
-    "start": "next start -p 3002",
+    "start": "next start -p 3005",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
