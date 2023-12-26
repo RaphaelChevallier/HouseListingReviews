@@ -24,11 +24,11 @@ export default async function AboutUs() {
               <p className='mt-2 text-sm'>This website is meant to be a forum for all that is related to housing. Whether you're a homeowner, a renter, or a real estate enthusiast, our platform provides a space to explore, learn, and discuss everything related to homes. Hopefully having widespread open discussion such as these on potential properties we all care about we can change the market more than the big players. We will not gather any more information than is necessary from you to create your account.</p>
               <p className='mt-2 text-sm'>This mission can also extend to rental opportunities. Please feel free to use this platform to discuss potential rental contracts as well.</p>
               <p className='mt-2 text-sm'>Please leave constructive comments and posts that align with the TOS. Be respectful to others and only post legitimate listings.</p>
-              <p className='mt-2 text-sm'>We have very few resources at the moment to keep this website running and improving. However if you have any ideas or bugs you would like to report please reach out to my email: </p>
+              <p className='mt-2 text-sm'>We have very few resources at the moment to keep this website running and improving. However if you have any ideas or bugs you would like to report please reach out to my email: homelistingreviews@gmail.com</p>
             </div>
               <Link target="_blank" rel="noreferrer" href='/Terms of Service for DwellingDebate.pdf'> <Button size='default' variant='ghost' className='text-black '> Terms of Service </Button> </Link>
               <Link target="_blank" rel="noreferrer" href='/Privacy Policy for DwellingDebate.pdf'> <Button size='default' variant='ghost' className='text-black '> Privacy Policy </Button> </Link>
-              <Link target="_blank" rel="noreferrer" href='/sitemap-0.xml'> <Button size='default' variant='ghost' className='text-black '> SiteMap </Button> </Link>
+              <Link target="_blank" rel="noreferrer" href='/sitemap.xml'> <Button size='default' variant='ghost' className='text-black '> SiteMap </Button> </Link>
             </div>
         </div>
         </div>
