@@ -70,8 +70,8 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitud
   return (
     <ul className='flex flex-col col-span-2 space-y-6'>
       {posts.length === 0 && region === 'CUSTOM FEED' ? "No posts on your feed yet. Subscribe to regions with existing posts." : null}
-      {posts.length === 0 && region != 'CUSTOM FEED' ? "This region does not contain any posts yet. Be the first to post for here!" : null}
-      {posts.length === 0 && (region === null || region === undefined) ? "No posts have been made at all yet. Be the first to post a listing!" : null}
+      {posts.length === 0 && region != 'CUSTOM FEED' && region != 'GENERAL FEED' ? "This region does not contain any posts yet. Be the first to post for here!" : null}
+      {posts.length === 0 && region === 'GENERAL FEED' ? "No posts have been made at all yet. Be the first to post a listing!" : null}
       {posts.map((post, index) => {
         const votesAmt = post.votes.reduce((acc, vote) => {
           if (vote.type === 'UP') return acc + 1

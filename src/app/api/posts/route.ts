@@ -57,7 +57,7 @@ export async function GET(req: Request) {
       )
       
       return new Response(JSON.stringify(posts))
-    } else if (regionType != "USER" && regionType != null && regionType != undefined){
+    } else if (regionType != "USER" && regionType != null && regionType != undefined && region != 'GENERAL FEED'){
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const posts = await db.post.findPointsWithin(
         latitude,
