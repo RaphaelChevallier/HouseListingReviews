@@ -49,7 +49,15 @@ export async function GET(req: Request) {
       whereClause = {
         author: { username: region},
       }
-    } else if ( regionType != "USER" && regionType != null && regionType != undefined ){
+    } else if ( regionType != "USER" && region === 'CUSTOM FEED' && session){
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const posts = await db.post.findAllSubPosts(
+        session.user.id,
+        skip
+      )
+      
+      return new Response(JSON.stringify(posts))
+    } else if (regionType != "USER" && regionType != null && regionType != undefined){
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const posts = await db.post.findPointsWithin(
         latitude,
@@ -58,7 +66,7 @@ export async function GET(req: Request) {
         skip
       )
       return new Response(JSON.stringify(posts))
-    }
+    } 
     // else if (session) {
     //   whereClause = {
     //     subreddit: {

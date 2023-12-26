@@ -87,7 +87,7 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
         }}
         value={input}
         className='outline-none border-none focus:border-none focus:outline-none ring-0'
-        placeholder='Search...'
+        placeholder='Search By...'
       />
 
       {input.length > 0 && (
@@ -127,8 +127,8 @@ const SearchBar: FC<SearchBarProps> = ({}) => {
     </Command>
     <DropdownMenu >
       <DropdownMenuTrigger>
-      <Button variant='subtle' className='bg-slate-200 h-full w-[12em] rounded-md'>
-        By: {searchType} <ChevronDown/>
+      <Button variant='subtle' size='default' className='bg-slate-200 rounded-md'>
+        {searchType} <ChevronDown/>
       </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='bg-white' align='end'>

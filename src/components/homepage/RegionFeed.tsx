@@ -1,6 +1,5 @@
 import { db } from '@/lib/db'
 import PostFeed from '../PostFeed'
-import { ExtendedPost } from '@/types/db'
 import { RegionType, RadiusUnits } from '@prisma/client'
 import axios, { AxiosRequestHeaders } from 'axios'
 

@@ -79,8 +79,7 @@ export default async function Location({ params, searchParams }: LocationProps) 
             <dl className="-my-3 px-6 py-4 text-sm leading-6">
               <div className="flex justify-between gap-x-4 py-3">
                 <p className="text-zinc-500">
-                  Posts in the region that you chose. Here to check in with the
-                  region and subscribe to keep track in your main feed!
+                  Posts at {decodeURIComponent(params.location)}. You searched by {decodeURIComponent(params.regionType.toLowerCase())} category. You can subscribe to this region to keep track in your main feed!
                 </p>
               </div>
               <SubscribeLeaveToggle
@@ -91,8 +90,8 @@ export default async function Location({ params, searchParams }: LocationProps) 
                 radiusUnits={searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}
                 coordinates={locationData.addresses[0].geometry.coordinates}
               />
-              <p className="flex justify-center items-center">With A:</p>
-              <RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/>
+              
+              {params.regionType === 'ADDRESS' ? <><p className="flex justify-center items-center">With A:</p><RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/></> : null}
 
 
               <Link
@@ -118,10 +117,11 @@ export default async function Location({ params, searchParams }: LocationProps) 
             <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
               <div className="flex justify-between gap-x-4 py-3">
                 <p className="text-zinc-500">
-                  Posts in the region that you chose. Here to check in with the
-                  region subscribe to keep track in your main feed!
+                  Posts at {decodeURIComponent(params.location)}. You searched by {decodeURIComponent(params.regionType.toLowerCase())} category. You can subscribe to this region to keep track in your main feed if you log in!
                 </p>
               </div>
+
+              {params.regionType === 'ADDRESS' ? <><p className="flex justify-center items-center">With A:</p><RadiusUnitsChange params={params} props={{radius: searchParams?.radius? searchParams.radius : 5, radiusUnits: searchParams?.radiusUnits? searchParams.radiusUnits : "KILOMETERS"}}/></> : null}
 
               <Link
                 className={buttonVariants({

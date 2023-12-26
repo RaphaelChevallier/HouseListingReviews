@@ -234,10 +234,12 @@ const extendedPrismaClient = () => {
               postVote_type: VoteType[]
               postVote_updatedAt: Date[],
             }[]
-          >`SELECT  distinct(p."id"), s.*, p."title", p."listingUrl", p."address", p."streetAddress", p."stateOrProvince", p."postalCode", p."city", p."country", p."county", p."content", p."authorId", p."createdAt", p."updatedAt", ST_X(location::geometry), ST_Y(location::geometry), array_agg(c.text) as "comment_texts", array_agg(c.id) as "comment_ids", array_agg(c."createdAt") as "comment_createdAt", array_agg(c."updatedAt") as "comment_updatedAt", array_agg(c."authorId") as "comment_authorId", array_agg(c."postId") as "comment_postId", array_agg(c."replyToId") as "comment_replyToId", array_agg(c."commentId") as "comment_commentId",
+          >`SELECT DISTINCT(p."id") as "postId", p."title", p."listingUrl", p."address", p."streetAddress", p."stateOrProvince", p."stateOrProvinceCode", p."postalCode", p."city", p."country", p."countryCode", p."county", p."content", p."authorId", p."createdAt", p."updatedAt", ST_X(location::geometry), ST_Y(location::geometry),
+          u.*, s."id" as "subscriptionId", s."userId" as "subscriptionUserId", s."region" as "subscriptionRegion", s."radius" as "subscriptionRadius", s."radiusUnits" as "subscriptionRadiusUnits", s."regionType" as "subscriptionRegionType", s."createdAt" as "subscriptionCreatedAt", s."updatedAt" as "subscriptionUpdatedAt", ST_X(s."coordinates"::geometry) as "subscriptionST_X", ST_Y(s."coordinates"::geometry) as "subscriptionST_Y",
+          array_agg(c.text) as "comment_texts", array_agg(c.id) as "comment_ids", array_agg(c."createdAt") as "comment_createdAt", array_agg(c."updatedAt") as "comment_updatedAt", array_agg(c."authorId") as "comment_authorId", array_agg(c."postId") as "comment_postId", array_agg(c."replyToId") as "comment_replyToId", array_agg(c."commentId") as "comment_commentId",
           array_agg(cv."userId") as "commentVote_userId", array_agg(cv."createdAt") as "commentVote_createdAt", array_agg(cv."updatedAt") as "commentVote_updatedAt", array_agg(cv."userId") as "commentVote_userId", array_agg(cv."commentId") as "commentVote_commentId", array_agg(cv."type") as "commentVote_type",
           array_agg(v."userId") as "postVote_userId", array_agg(v."createdAt") as "postVote_createdAt", array_agg(v."updatedAt") as "postVote_updatedAt", array_agg(v."postId") as "postVote_postId", array_agg(v."type") as "postVote_type"
-          FROM "Post" as p  LEFT JOIN "Comment" as c ON p."id" = c."postId" LEFT JOIN "Vote" as v ON p."id" = v."postId" LEFT JOIN "CommentVote" as cv ON c."id" = cv."commentId", "Subscription" as s
+          FROM "Post" as p LEFT JOIN "User" as u ON p."authorId" = u."id" LEFT JOIN "Comment" as c ON p."id" = c."postId" LEFT JOIN "Vote" as v ON p."id" = v."postId" LEFT JOIN "CommentVote" as cv ON c."id" = cv."commentId", "Subscription" as s
           WHERE s."userId" = ${userId} 
           AND
           ( CASE 
@@ -256,19 +258,10 @@ const extendedPrismaClient = () => {
                 )
             END
           )
-          GROUP BY p."id", s."id"
+          GROUP BY p."id", u."id", s."id"
           ORDER BY p."createdAt" desc
           LIMIT ${INFINITE_SCROLL_PAGINATION_RESULTS}
           OFFSET ${skip? skip : 0}`;
-              
-              // WHERE ST_DistanceSphere(location::geometry, ST_MakePoint(${longitude},${latitude})) <= ${metersRadiusDecimal}
-              // GROUP BY p."id", u."id"
-              // ORDER BY p."createdAt" DESC
-              // LIMIT ${INFINITE_SCROLL_PAGINATION_RESULTS}
-              // OFFSET ${skip? skip : 0}`;
-
-          // use this if you decide to want to order by location proximity as well
-          //ORDER BY ST_DistanceSphere(location::geometry, ST_MakePoint(${latitude}, ${longitude})) DESC`
 
           // Transform to our custom type
           const pois: ExtendedPost[] = result.map((data) => {

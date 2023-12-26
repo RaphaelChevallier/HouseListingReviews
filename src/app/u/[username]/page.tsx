@@ -1,5 +1,5 @@
 import UserHistoryFeed from '@/components/homepage/UserHistoryFeed'
-import { Button, buttonVariants } from '@/components/ui/Button'
+import { buttonVariants } from '@/components/ui/Button'
 import { getAuthSession } from '@/lib/auth'
 import { History } from 'lucide-react'
 import { notFound } from 'next/navigation'
@@ -41,11 +41,9 @@ export default async function UserHistory({ params }: UserHistoryProps) {
 
   const isSubscribed = !!subscription
 
-  // if (!subscription) return notFound()
-
   return (
     <>
-      <h1 className='font-bold text-3xl md:text-4xl'>Post History</h1>
+      {session && session.user.username === params.username ? <h1 className='font-bold text-3xl md:text-4xl'>Your Post History</h1> : <h1 className='font-bold text-3xl md:text-4xl'>{params.username}&apos;s Post History</h1>}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6'>
         {/* @ts-expect-error server component */}
         <UserHistoryFeed user={params.username}/>
@@ -80,15 +78,20 @@ export default async function UserHistory({ params }: UserHistoryProps) {
         <div className='bg-emerald-100 px-6 py-4'>
           <p className='font-semibold py-3 flex items-center gap-1.5'>
             <History className='h-4 w-4' />
-            u/{params.username}&apos;s Post History
+            {params.username}&apos;s Post History
           </p>
         </div>
         <dl className='-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6'>
           <div className='flex justify-between gap-x-4 py-3'>
-            <p className='text-zinc-500'>
-              Here are u/{params.username}&apos;s prior posts. Come here to check in with their
+            {isSubscribed? <p className='text-zinc-500'>
+              Here are {params.username}&apos;s prior posts. Come here to check in with their
               past posts.
-            </p>
+            </p> 
+            :
+             <p className='text-zinc-500'>
+              Here are {params.username}&apos;s prior posts. Come here to check in with their
+              past posts. Subscribe to {params.username} to follow his new posts!
+            </p> }
           </div>
           <SubscribeLeaveToggle
               isSubscribed={isSubscribed}

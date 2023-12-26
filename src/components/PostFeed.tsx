@@ -47,6 +47,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitud
         (!!regionType && !!region && !!longitude ? `&longitude=${longitude}` : '') + (!!regionType && !!region && !!longitude && !!latitude && !!radius ? `&radius=${radius}` : '') +
         (!!regionType && !!region && !!longitude && !!latitude && !!radiusUnits ? `&radiusUnits=${radiusUnits}` : '')
 
+      console.log(query)
       const { data } = await axios.get(query)
       return data as ExtendedPost[]
     },
