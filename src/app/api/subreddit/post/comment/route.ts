@@ -2,6 +2,7 @@ import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { CommentValidator } from '@/lib/validators/comment'
 import { z } from 'zod'
+import cuid from 'cuid'
 
 export async function PATCH(req: Request) {
   try {
@@ -12,7 +13,17 @@ export async function PATCH(req: Request) {
     const session = await getAuthSession()
 
     if (!session?.user) {
-      return new Response('Unauthorized', { status: 401 })
+      const anonId = cuid();
+      await db.comment.create({
+        data: {
+          text,
+          postId,
+          authorId: "Anonymous-" + anonId,
+          replyToId,
+        },
+      })
+  
+      return new Response('OK')
     }
 
     // if no existing vote, create a new vote

@@ -27,8 +27,8 @@ export default async function Donate() {
                   alt='profile pic' priority layout='fill' objectFit='contain' src='https://storage.ko-fi.com/cdn/useruploads/display/e759320c-3b6d-4ddc-819c-1fe188630e7d_img_3449.jpg'
                 />
               </div>
-              <h1 className='flex justify-center mt-4 text-md font-semibold'>My name is Raphael. Welcome to Home Listing Reviews!</h1>
-              <h3 className='mt-2 text-sm'> I would like to thank you for your time using the services of Home Listing Reviews.</h3>
+              <h1 className='flex justify-center mt-4 text-md font-semibold'>My name is Raphael. Welcome to Dwelling Debate!</h1>
+              <h3 className='mt-2 text-sm'> I would like to thank you for your time using the services of Dwelling Debate.</h3>
               <h3 className='mt-2 text-sm'>The mission here is to make real estate approachable. Too long has the housing market been clouded by rich investors and real estate agents. This website is to create a free and open space to discuss any public house listing or property openly with other like minded people and individuals to share thoughts, concerns, and expertise.</h3>
               <p className='mt-2 text-sm'>As a new graduate entering this world where housing is meant to be the pinnacle of the American Dream, it seems that it is more and more out of reach. If we can have open discussion on properties this should help the market retain its original value.</p>
               <p className='mt-2 text-sm'>This mission can also extend to rental opportunities. Please feel free to use this platform to discuss potential rental contracts as well.</p>

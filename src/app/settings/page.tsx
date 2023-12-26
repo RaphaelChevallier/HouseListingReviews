@@ -30,7 +30,7 @@ export default async function SettingsPage() {
           />
         </div>
         <div className='grid gap-10'>
-            <Link href='/about'> <Button size='default' variant='ghost' className='text-black '> Learn More </Button> </Link>
+            <Link href='/aboutUs'> <Button size='default' variant='ghost' className='text-black '> Learn More </Button> </Link>
         </div>
       </div>
     </div>

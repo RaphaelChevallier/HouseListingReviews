@@ -29,10 +29,10 @@ export default async function Home() {
           <dl className='-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6'>
             <div className='flex justify-between gap-x-4 py-3'>
               {session? <p className='text-zinc-500'>
-                Your personal HomeListingReviews frontpage. Come here to check in with your
+                Your personal Dwelling Debate frontpage. Come here to check in with your
                 favorite communities.
               </p> : <p className='text-zinc-500'>
-                Your HomeListingReviews frontpage. Sign in now to personalize this feed with your favorite area posts!
+                Your Dwelling Debate frontpage. Sign in now to personalize this feed with your favorite area posts!
               </p> }
             </div>
             {session ? null : <p className='text-zinc-500'> You are currently not signed in. All your actions will be anonymous. </p>}

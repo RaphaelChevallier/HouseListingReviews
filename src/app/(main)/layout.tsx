@@ -7,8 +7,8 @@ import Link from 'next/link'
 import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Breadit',
-  description: 'A Reddit clone built with Next.js and TypeScript.',
+  title: 'Dwelling Debate',
+  description: 'Open discussion on property listings',
 }
 
 const Layout = async ({
