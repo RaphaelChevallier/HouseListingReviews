@@ -47,8 +47,7 @@ export async function GET(req: Request) {
 
     if (regionType === "USER") {
       whereClause = {
-        regionType: regionType,
-        region: region
+        author: { username: region},
       }
     } else if ( regionType != "USER" && regionType != null && regionType != undefined ){
       const skip = (parseInt(page) - 1) * parseInt(limit);

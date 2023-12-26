@@ -7,24 +7,25 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    const { title,listingUrl, address, stateOrProvince, streetAddress, postalCode, city, country, county, longitude, latitude, content } = PostValidator.parse(body)
+    const { title,listingUrl, address, stateOrProvince, stateOrProvinceCode, streetAddress, postalCode, city, country, countryCode, county, longitude, latitude, content } = PostValidator.parse(body)
 
     const session = await getAuthSession()
 
     if (!session?.user) {
       return new Response('Unauthorized', { status: 401 })
     }
-
     await db.post.create({
       data: {
         title,
         listingUrl,
         address,
         stateOrProvince,
+        stateOrProvinceCode,
         streetAddress,
         postalCode,
         city,
         country,
+        countryCode,
         county,
         longitude,
         latitude,

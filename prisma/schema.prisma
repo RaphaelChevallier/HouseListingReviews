@@ -80,17 +80,16 @@ enum RegionType {
 }
 
 model Subscription {
+  id          String                                 @id @default(cuid())
   user        User                                   @relation(fields: [userId], references: [id])
   userId      String
   region      String
   radius      Decimal?
   radiusUnits RadiusUnits?
   regionType  RegionType
-  location    Unsupported("geography(Point, 4326)")?
+  coordinates    Unsupported("geography(Point, 4326)")?
   createdAt   DateTime                               @default(now())
   updatedAt   DateTime                               @default(now()) @updatedAt
-
-  @@id([userId])
 }
 
 model Post {
@@ -98,11 +97,13 @@ model Post {
   title           String
   address         String
   stateOrProvince String
+  stateOrProvinceCode String
   streetAddress   String
   postalCode      String
   city            String
   county          String
-  country         String
+  country         String 
+  countryCode     String
   location        Unsupported("geography(Point, 4326)")?
   listingUrl      String?
   content         Json?

@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 import { useToast } from '../hooks/use-toast'
 import { useCustomToasts } from '@/hooks/use-custom-toasts'
-import { Decimal } from '@prisma/client/runtime/library'
 import { RadiusUnits } from '@prisma/client'
 
 interface SubscribeLeaveToggleProps {
@@ -16,7 +15,7 @@ interface SubscribeLeaveToggleProps {
   regionType: string
   radius: number
   radiusUnits: RadiusUnits
-  coordinates?: Array<Decimal>
+  coordinates?: Array<number>
 }
 
 const SubscribeLeaveToggle = ({

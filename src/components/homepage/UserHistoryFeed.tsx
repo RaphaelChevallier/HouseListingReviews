@@ -18,7 +18,7 @@ const UserHistoryFeed = async (username: any) => {
     take: INFINITE_SCROLL_PAGINATION_RESULTS,
   })
 
-  return <PostFeed initialPosts={posts} />
+  return <PostFeed initialPosts={posts} region={username.user} regionType={'USER'}/>
 }
 
 export default UserHistoryFeed

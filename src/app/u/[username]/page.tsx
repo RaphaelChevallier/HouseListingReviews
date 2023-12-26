@@ -95,7 +95,7 @@ export default async function UserHistory({ params }: UserHistoryProps) {
               region={params.username}
               regionType={RegionType.USER}
               radius={0}
-              radiusUnits='miles'
+              radiusUnits='MILES'
             />
 
           <Link

@@ -23,7 +23,10 @@ const Navbar = async () => {
 
         {/* actions */}
 
-        <Link href='/donate'> <Button size='default' className='bg-[#FF954F] text-black hover:bg-[#ff7d28]'> Donate <Heart className='ml-2 fill-red-600'/> </Button> </Link>
+        <Link href='/post/submit'> <Button size='default' className='bg-zinc-900 text-zinc-100 hover:bg-zinc-800'> Create {session ? null : " Anonymous "} Post </Button> </Link>
+
+
+        <Link href='/donate'> <Button size='default' className='bg-[#FF954F] text-black hover:bg-[#ff7d28]'> Donate <Heart className='ml-2 fill-red-600'/>  </Button> </Link>
 
         {session?.user ? (
           <UserAccountNav user={session.user} />

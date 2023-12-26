@@ -88,7 +88,6 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitud
               <Post
                 post={post}
                 commentAmt={post.comments.length}
-                // subredditName={post.subreddit.name}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
               />
@@ -100,7 +99,6 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, region, regionType, latitud
               key={post.id}
               post={post}
               commentAmt={post.comments.length}
-              // subredditName={post.subreddit.name}
               votesAmt={votesAmt}
               currentVote={currentVote}
             />

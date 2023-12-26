@@ -2,7 +2,6 @@ import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { RadiusUnits, RegionType } from '@prisma/client'
 import { z } from 'zod'
-import { convertToMiles } from '@/components/homepage/RegionFeed'
 import { Prisma } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
@@ -16,7 +15,7 @@ export async function POST(req: Request) {
 
     const body = await req.json()
   
-    let { region, regionType, radius, radiusUnits, coordinates } : {region: string, regionType: RegionType, radius: Decimal, radiusUnits: RadiusUnits, coordinates: Array<Decimal>} = body
+    let { region, regionType, radius, radiusUnits, coordinates } : {region: string, regionType: RegionType, radius: Decimal, radiusUnits: RadiusUnits, coordinates: Array<number>} = body
 
 
     if(regionType === RegionType.USER){
@@ -41,7 +40,7 @@ export async function POST(req: Request) {
 
     if((subscriptionExists?.radius && subscriptionExists?.radius != radius) ||(subscriptionExists?.radiusUnits && subscriptionExists?.radiusUnits != radiusUnits)){
       // create and delete and associate it with the user
-      await db.subscription.delete({
+      await db.subscription.deleteMany({
         where: {
           userId: session.user.id,
           region,
@@ -81,8 +80,6 @@ export async function POST(req: Request) {
         coordinates: coordinates
       },
     })
-
-    console.log(newSub)
 
     return new Response('Subscribed!',
     { status: 200 })

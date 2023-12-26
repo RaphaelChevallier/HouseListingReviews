@@ -69,7 +69,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
   const _titleRef = useRef<HTMLTextAreaElement>(null);
   const _listingUrlRef = useRef<HTMLTextAreaElement>(null);
   const _addressRef = useRef<HTMLTextAreaElement>(null);
-  const [input, setInput] = useState({ fullAddress: '', streetAddress: '', stateOrProvince: '', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' })
+  const [input, setInput] = useState({ fullAddress: '', streetAddress: '', stateOrProvince: '', stateOrProvinceCode: '' , postalCode: '', city: '', country: '', countryCode: '', county: '', latitude: '', longitude: '' })
   const [selectedAddress, setSelectedAddress] = useState<boolean>(false);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -78,7 +78,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
   useOnClickOutside(_addressRef, () => {
     if(!selectedAddress){
       setSelectedAddress(true)
-      setInput({ fullAddress: '', streetAddress: '', stateOrProvince:'', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' })
+      setInput({ fullAddress: '', streetAddress: '', stateOrProvince:'', stateOrProvinceCode: '', postalCode: '', city: '', country: '', county: '', countryCode: '', latitude: '', longitude: '' })
     }
   });
 
@@ -98,10 +98,12 @@ export const Editor: React.FC<EditorProps> = ({}) => {
       listingUrl,
       address,
       stateOrProvince,
+      stateOrProvinceCode,
       streetAddress,
       postalCode,
       city,
       country,
+      countryCode,
       county,
       longitude,
       latitude,
@@ -112,10 +114,12 @@ export const Editor: React.FC<EditorProps> = ({}) => {
         listingUrl,
         address,
         stateOrProvince,
+        stateOrProvinceCode,
         streetAddress,
         postalCode,
         city,
         country,
+        countryCode,
         county,
         longitude,
         latitude,
@@ -245,16 +249,18 @@ export const Editor: React.FC<EditorProps> = ({}) => {
       title: data.title,
       listingUrl: data.listingUrl,
       address: input.fullAddress,
+      stateOrProvince: input.stateOrProvince,
+      stateOrProvinceCode: input.stateOrProvinceCode,
       streetAddress: input.streetAddress,
       postalCode: input.postalCode,
       city: input.city,
       country: input.country,
+      countryCode: input.countryCode,
       county: input.county,
       longitude: parseFloat(input.longitude),
       latitude: parseFloat(input.latitude),
       content: blocks,
     };
-
     createPost(payload);
   }
 
@@ -308,7 +314,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
               isLoading={isFetching}
               onValueChange={(text) => {
                 setSelectedAddress(false);
-                setInput({ fullAddress: text, streetAddress: '', stateOrProvince: '', postalCode: '', city: '', country: '', county: '', latitude: '', longitude: '' });
+                setInput({ fullAddress: text, streetAddress: '', stateOrProvince: '', stateOrProvinceCode: '', postalCode: '', city: '', country: '', countryCode: '', county: '', latitude: '', longitude: '' });
                 debounceRequest();
               }}
               value={input.fullAddress}
@@ -333,7 +339,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
                         value={autoCompleteAddress.formattedAddress}
                       >
                         <MapPin className="mr-2 h-4 w-4" />
-                        <a onClick={() => setInput({ fullAddress: autoCompleteAddress.formattedAddress, streetAddress: autoCompleteAddress.addressLabel, stateOrProvince: autoCompleteAddress.state, postalCode: autoCompleteAddress.postalCode, city: autoCompleteAddress.city, country: autoCompleteAddress.country, county: autoCompleteAddress.county, latitude: autoCompleteAddress.latitude.toString(), longitude: autoCompleteAddress.longitude.toString() })}>{autoCompleteAddress.formattedAddress}</a>
+                        <a onClick={() => setInput({ fullAddress: autoCompleteAddress.formattedAddress, streetAddress: autoCompleteAddress.addressLabel, stateOrProvince: autoCompleteAddress.state , stateOrProvinceCode: autoCompleteAddress.stateCode, postalCode: autoCompleteAddress.postalCode, city: autoCompleteAddress.city, country: autoCompleteAddress.country, countryCode: autoCompleteAddress.countryCode, county: autoCompleteAddress.county, latitude: autoCompleteAddress.latitude.toString(), longitude: autoCompleteAddress.longitude.toString() })}>{autoCompleteAddress.formattedAddress}</a>
                       </CommandItem>
                     ))}
                   </CommandGroup>

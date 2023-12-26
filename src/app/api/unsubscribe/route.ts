@@ -43,6 +43,7 @@ export async function POST(req: Request) {
 
     await db.subscription.delete({
       where: {
+        id: subscriptionExists.id,
         userId: session.user.id,
         region,
         regionType: regionType,
