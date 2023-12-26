@@ -1,28 +1,25 @@
 import { Editor } from '@/components/Editor'
 import { Button } from '@/components/ui/Button'
-import { db } from '@/lib/db'
-import { notFound } from 'next/navigation'
+import { getAuthSession } from '@/lib/auth'
 
 interface pageProps {
 }
 
 const page = async ({ }: pageProps) => {
-  // const subreddit = await db.post.findFirst({
-  //   where: {
-  //     : params.slug,
-  //   },
-  // })
-
-  // if (!subreddit) return notFound()
+  const session = await getAuthSession()
 
   return (
     <div className='flex flex-col items-start gap-6'>
       {/* heading */}
       <div className='border-b border-gray-200 pb-5'>
         <div className='-ml-2 -mt-2 flex flex-wrap items-baseline'>
-          <h3 className='ml-2 mt-2 text-base font-semibold leading-6 text-gray-900'>
+        {session? <h3 className='ml-2 mt-2 text-base font-semibold leading-6 text-gray-900'>
             Create Post
+          </h3> :
+          <h3 className='ml-2 mt-2 text-base font-semibold leading-6 text-gray-900'>
+            Create Anonymous Post
           </h3>
+          }
         </div>
       </div>
 

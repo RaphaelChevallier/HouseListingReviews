@@ -41,16 +41,6 @@ const Post: FC<PostProps> = ({
 
         <div className='w-0 flex-1'>
           <div className='max-h-40 mt-1 text-xs text-gray-500'>
-            {/* {subredditName ? (
-              <>
-                <a
-                  className='underline text-zinc-900 text-sm underline-offset-2'
-                  href={`/r/${subredditName}`}>
-                  r/{subredditName}
-                </a>
-                <span className='px-1'>•</span>
-              </>
-            ) : null} */}
             <span>Posted by u/<Link className='hover:underline' href={`/u/${post.author.username}`}>{post.author.username}</Link></span>{' '}
             {formatTimeToNow(new Date(post.createdAt))}
           </div>

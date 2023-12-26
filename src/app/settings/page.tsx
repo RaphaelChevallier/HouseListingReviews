@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
-
+import Link from 'next/link'
 import { UserNameForm } from '@/components/UserNameForm'
 import { authOptions, getAuthSession } from '@/lib/auth'
+import { Button } from '@/components/ui/Button'
 
 export const metadata = {
   title: 'Settings',
@@ -27,6 +28,9 @@ export default async function SettingsPage() {
               username: session.user.username || '',
             }}
           />
+        </div>
+        <div className='grid gap-10'>
+            <Link href='/about'> <Button size='default' variant='ghost' className='text-black '> Learn More </Button> </Link>
         </div>
       </div>
     </div>

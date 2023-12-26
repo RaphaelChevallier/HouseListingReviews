@@ -73,7 +73,6 @@ export const Editor: React.FC<EditorProps> = ({}) => {
   const [selectedAddress, setSelectedAddress] = useState<boolean>(false);
   const router = useRouter();
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const pathname = usePathname();
 
   useOnClickOutside(_addressRef, () => {
     if(!selectedAddress){
@@ -135,10 +134,8 @@ export const Editor: React.FC<EditorProps> = ({}) => {
         variant: "destructive",
       });
     },
-    onSuccess: () => {
-      // turn pathname /r/mycommunity/submit into /r/mycommunity
-      const newPathname = pathname.split("/").slice(0, -1).join("/");
-      router.push(newPathname);
+    onSuccess: (id) => {
+      router.push(`/post/${id}`);
 
       router.refresh();
 
@@ -300,7 +297,7 @@ export const Editor: React.FC<EditorProps> = ({}) => {
             }}
             {...rest1}
             placeholder="Paste listing url here"
-            className="w-full mb-2 resize-none appearance-none overflow-hidden bg-transparent text-md focus:outline-none border-b-2 border-slate-400 text-blue-400"
+            className="w-full mb-2 resize-none appearance-none overflow-hidden bg-transparent text-md focus:outline-none border-b-2 border-slate-400 text-blue-400 hover:text-blue-700 hover:underline visited:text-purple-600"
           />
           <Command
             ref={(e) => {

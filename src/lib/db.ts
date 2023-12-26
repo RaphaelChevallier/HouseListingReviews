@@ -47,7 +47,7 @@ const extendedPrismaClient = () => {
           const id = cuid();
           const post = await prisma.$queryRaw`INSERT INTO "Post" ("id", "title", "address", "stateOrProvince", "stateOrProvinceCode", "streetAddress", "postalCode", "city", "county", "country", "countryCode", "location", "content", "listingUrl", "authorId") VALUES (${id}, ${data.data.title},${data.data.address}, ${data.data.stateOrProvince}, ${data.data.stateOrProvinceCode}, ${data.data.streetAddress},${data.data.postalCode}, ${data.data.city}, ${data.data.county}, ${data.data.country}, ${data.data.countryCode}, ST_GeomFromText(${point}, 4326), ${data.data.content}, ${data.data.listingUrl}, ${data.data.authorId});`
           // Return the object
-          return poi
+          return id
         },
         async findPointsWithin(latitude: Decimal, longitude: Decimal, metersRadius: number, skip?: number) {
           const metersRadiusDecimal = new Prisma.Decimal(metersRadius);
