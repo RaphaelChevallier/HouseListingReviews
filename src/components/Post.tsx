@@ -51,7 +51,7 @@ const Post: FC<PostProps> = ({
           <h3 className='text-sm py-2 leading-6'>
             <Link className='text-blue-600 dark:text-blue-500 hover:underline' target='_blank' href={post.listingUrl?? ''}>{post.listingUrl}</Link>
           </h3>
-          <h3 className={post.content?.blocks.length != 0 ? 'text-md py-2 leading-6 border-b mb-4' : 'text-md py-2 leading-6'}>
+          <h3 className={post.content ? 'text-md py-2 leading-6 border-b mb-4' : 'text-md py-2 leading-6'}>
           <Link className='text-blue-600 dark:text-blue-500 hover:underline' target='_blank' href={`https://www.google.com/maps/place/${post.address}`}>{post.address}</Link>
           </h3>
 
