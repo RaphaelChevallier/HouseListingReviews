@@ -1,4 +1,4 @@
-import { Icons } from '@/components/Icons'
+import Image from 'next/image'
 import UserAuthForm from '@/components/UserAuthForm'
 import Link from 'next/link'
 
@@ -6,7 +6,12 @@ const SignUp = () => {
   return (
     <div className='container mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]'>
       <div className='flex flex-col space-y-2 text-center'>
-        <Icons.logo className='mx-auto h-6 w-6' />
+      <Image
+            src='/favicon.ico'
+            alt='logo image'
+            width={50}
+            height={40}
+          />
         <h1 className='text-2xl font-semibold tracking-tight'>Sign Up</h1>
         <p className='text-sm max-w-xs mx-auto'>
           By continuing, you are setting up a Dwelling Debate account and agree to our
